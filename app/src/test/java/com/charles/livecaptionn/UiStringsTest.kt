@@ -1,5 +1,6 @@
 package com.charles.livecaptionn
 
+import com.charles.livecaptionn.ui.l10n.UiStringCatalog
 import com.charles.livecaptionn.ui.l10n.UiStrings
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -58,5 +59,21 @@ class UiStringsTest {
     fun format_handlesUnicodeArgs() {
         val t = UiStrings.EMPTY
         assertEquals("Hello, 世界", t.format("Hello, %s", "世界"))
+    }
+
+    @Test
+    fun builtinZhStrings_preservesAllFormatPlaceholdersAndSwitches() {
+        val zh = UiStringCatalog.ZH_CN_STRINGS
+        assertTrue(zh.isZh)
+        assertEquals("剧情英文字幕", zh[UiStringCatalog.appName])
+        assertEquals("中", zh.pick("中", "EN"))
+        assertEquals("EN", UiStrings.EMPTY.pick("中", "EN"))
+        UiStringCatalog.BUILTIN_ZH_CN.forEach { (k, v) ->
+            assertEquals(
+                "Placeholder mismatch for key '$k' -> '$v'",
+                UiStringCatalog.placeholderCount(k),
+                UiStringCatalog.placeholderCount(v)
+            )
+        }
     }
 }

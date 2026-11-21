@@ -228,20 +228,32 @@ class StoryMatcher private constructor(
             if (maxLen > minLen * 2.4) continue
 
             val fuzzyStats = computeFuzzyWordStats(queryWords, wordSet, line.words, line.wordSet)
-            if (fuzzyStats.f1 < 0.36 && fuzzyStats.containment < 0.65) continue
+            val isTightAhead = cursor >= 0 && idx in (cursor + 1)..(cursor + NEAR_CURSOR_LOOKAHEAD)
+            var fallbackCharSim = 0.0
+            if (fuzzyStats.f1 < 0.36 && fuzzyStats.containment < 0.65) {
+                if (!isTightAhead || minLen < 10) continue
+                fallbackCharSim = nearCursorCharSimilarity(query, line.normalized)
+                if (fallbackCharSim < NEAR_CURSOR_CHAR_THRESHOLD) continue
+            }
 
             compared++
             editCells += query.length * line.normalized.length
             if (compared > MAX_COMPARISONS || editCells > MAX_EDIT_CELLS) break
 
-            val score = hybridScore(query, line.normalized, fuzzyStats, minLen)
+            val baseScore = hybridScore(query, line.normalized, fuzzyStats, minLen)
+            val score = maxOf(baseScore, fallbackCharSim)
             if (score > topCandidateScore) {
                 topCandidateScore = score
                 topCandidatePreview = line.original
             }
+            val threshold = if (isTightAhead && idx <= cursor + 4 && minLen >= 11) {
+                NEXT_LINE_THRESHOLD
+            } else {
+                WINDOW_THRESHOLD
+            }
             // Prefer moving forward over re-matching cursor - 1 unless cursor - 1 is clearly stronger.
             val effectiveScore = if (idx <= cursor) score - 0.04 else score
-            if (score >= WINDOW_THRESHOLD && effectiveScore > bestScore) {
+            if (score >= threshold && effectiveScore > bestScore) {
                 bestScore = effectiveScore
                 bestIdx = idx
             }
@@ -391,6 +403,24 @@ class StoryMatcher private constructor(
         return FuzzyWordStats(f1, containment, matchedCount)
     }
 
+    private fun nearCursorCharSimilarity(query: String, lineNorm: String): Double {
+        var best = similarity(query, lineNorm)
+        if (lineNorm.length > query.length + 4) {
+            val words = lineNorm.split(' ').filter { it.isNotEmpty() }
+            if (words.size >= 3) {
+                val tailBuf = StringBuilder()
+                for (i in words.lastIndex downTo 1) {
+                    if (tailBuf.isNotEmpty()) tailBuf.insert(0, ' ')
+                    tailBuf.insert(0, words[i])
+                    if (tailBuf.length in (query.length * 0.65).toInt()..(query.length * 1.35).toInt()) {
+                        best = maxOf(best, similarity(query, tailBuf.toString()))
+                    }
+                }
+            }
+        }
+        return best
+    }
+
     private fun hybridScore(
         query: String,
         lineNorm: String,
@@ -399,8 +429,8 @@ class StoryMatcher private constructor(
     ): Double {
         val charSim = similarity(query, lineNorm)
         val blended = 0.35 * charSim + 0.65 * stats.f1
-        val containBoost = if (stats.matchedCount >= 4 && minLen >= 18 && stats.containment >= 0.80) {
-            0.76 * stats.containment
+        val containBoost = if (stats.matchedCount >= 4 && minLen >= 16 && stats.containment >= 0.74) {
+            0.84 * stats.containment
         } else {
             0.0
         }
@@ -425,6 +455,9 @@ class StoryMatcher private constructor(
         private const val WINDOW_SIZE = 32
         private const val NEXT_CHAPTER_PEEK = 16
         private const val WINDOW_THRESHOLD = 0.66
+        private const val NEXT_LINE_THRESHOLD = 0.58
+        private const val NEAR_CURSOR_LOOKAHEAD = 6
+        private const val NEAR_CURSOR_CHAR_THRESHOLD = 0.56
         private const val CHAPTER_THRESHOLD = 0.72
         private const val CHAPTER_GAP = 0.03
         private const val GLOBAL_THRESHOLD = 0.87

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">剧情英文字幕</string>
-    <string name="notification_channel_name">Live Captioning</string>
-    <string name="notification_channel_desc">Shows when live captioning is active.</string>
-    <string name="notification_title">Captioning in progress</string>
-    <string name="notification_text">Listening and translating speech.</string>
+    <string name="notification_channel_name">实时字幕监听</string>
+    <string name="notification_channel_desc">显示实时剧情字幕识别状态</string>
+    <string name="notification_title">字幕识别运行中</string>
+    <string name="notification_text">正在监听音频并输出剧情字幕</string>
 
     <!-- Main screen -->
     <string name="start">Start</string>

@@ -162,22 +162,29 @@ object StoryDocumentParser {
         val trimmed = raw.trim()
         val arrowIdx = trimmed.lastIndexOf("→ ✓")
         val base = if (arrowIdx >= 0) {
-            trimmed.substring(arrowIdx + "→ ✓".length).trim()
+            trimmed.substring(arrowIdx + "→ ✓".length)
         } else {
             val checkIdx = trimmed.lastIndexOf('✓')
             if (checkIdx >= 0 && trimmed.contains('⚠')) {
-                trimmed.substring(checkIdx + 1).trim()
+                trimmed.substring(checkIdx + 1)
             } else {
-                trimmed.replace("⚠", "").trim()
+                trimmed
             }
         }
-        return base.replace(Regex("\\s+"), " ").trim()
+        val cleaned = base
+            .replace("✓", " ")
+            .replace("⚠", " ")
+            .replace(Regex("""^[\u4e00-\u9fff—\-]+[？。！!?,，.…\s]*"""), "")
+            .replace(Regex("""\s+[\u4e00-\u9fff]+[？。！!?,，.…\s]*$"""), "")
+            .replace(Regex("\\s+"), " ")
+            .trim()
+        return if (cleaned.any { it in 'a'..'z' || it in 'A'..'Z' || it in '0'..'9' }) cleaned else ""
     }
 
     /**
-     * Expands multi-sentence and multi-clause English lines into additional candidates
-     * right next to the full line so mid-sentence VAD pauses (including comma pauses like
-     * `"It was the year 1861,"`) match cleanly without waiting for the entire paragraph.
+     * Expands multi-sentence, comma/semicolon clauses, and long unpunctuated sentences
+     * into additional candidates right next to the full line so mid-sentence VAD pauses
+     * match cleanly without waiting for an entire long turn.
      */
     internal fun splitSentencesIfLong(english: String): List<String> {
         val clean = english.trim()
@@ -191,23 +198,47 @@ object StoryDocumentParser {
         // onto their neighbor so each indexed clause stays distinctive.
         for (sent in sentences) {
             if (sent.length <= 50) continue
+            val candidatesToChunk = mutableListOf<String>()
             val rawClauses = sent.split(CLAUSE_SPLIT_REGEX).map { it.trim() }.filter { it.isNotEmpty() }
-            if (rawClauses.size < 2) continue
-            val merged = mutableListOf<String>()
-            var acc = ""
-            for (c in rawClauses) {
-                acc = if (acc.isEmpty()) c else "$acc $c"
-                if (acc.split(' ').count { it.any(Char::isLetterOrDigit) } >= 4) {
-                    merged.add(acc)
-                    acc = ""
+            if (rawClauses.size >= 2) {
+                val merged = mutableListOf<String>()
+                var acc = ""
+                for (c in rawClauses) {
+                    acc = if (acc.isEmpty()) c else "$acc $c"
+                    if (acc.split(' ').count { it.any(Char::isLetterOrDigit) } >= 4) {
+                        merged.add(acc)
+                        acc = ""
+                    }
                 }
+                if (acc.isNotEmpty()) {
+                    if (merged.isNotEmpty()) merged[merged.lastIndex] = "${merged.last()} $acc"
+                    else merged.add(acc)
+                }
+                if (merged.size >= 2) {
+                    out.addAll(merged)
+                    candidatesToChunk.addAll(merged)
+                } else {
+                    candidatesToChunk.add(sent)
+                }
+            } else {
+                candidatesToChunk.add(sent)
             }
-            if (acc.isNotEmpty()) {
-                if (merged.isNotEmpty()) merged[merged.lastIndex] = "${merged.last()} $acc"
-                else merged.add(acc)
-            }
-            if (merged.size >= 2) {
-                out.addAll(merged)
+            // Fallback for any long unpunctuated segment (>75 chars, >=14 words) so VAD
+            // breaks in the middle still expose clean overlapping chunks.
+            for (seg in candidatesToChunk) {
+                if (seg.length <= 75) continue
+                val words = seg.split(Regex("\\s+")).filter { it.isNotEmpty() }
+                if (words.size >= 14) {
+                    var start = 0
+                    while (start < words.size) {
+                        val end = (start + 11).coerceAtMost(words.size)
+                        if (end - start >= 6) {
+                            out.add(words.subList(start, end).joinToString(" "))
+                        }
+                        if (end == words.size) break
+                        start += 5
+                    }
+                }
             }
         }
         out.remove(clean)

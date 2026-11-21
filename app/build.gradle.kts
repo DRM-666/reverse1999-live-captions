@@ -40,7 +40,7 @@ val hasReleaseSigning: Boolean = keystoreProps.getProperty("storeFile")?.isNotBl
 // number matches the release tag (v1.0.<run_number>). Local dev builds get 1.
 // Explicit env overrides (ANDROID_VERSION_CODE / ANDROID_VERSION_NAME) allow
 // the manual Play Publish workflow to set a high monotonic version code.
-val ciRunNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 6
+val ciRunNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 7
 val appVersionCode: Int = System.getenv("ANDROID_VERSION_CODE")?.toIntOrNull() ?: ciRunNumber
 val appVersionName: String = System.getenv("ANDROID_VERSION_NAME")
     ?: "1.0.$appVersionCode"
@@ -108,19 +108,20 @@ android {
         manifestPlaceholders["admobAppId"] =
             localProps.getProperty("ads.admob.app.id", "ca-app-pub-3940256099942544~3347511713")
 
-        // GitHub repo that the in-app update checker queries for new releases.
-        buildConfigField("String", "UPDATE_REPO_OWNER", "\"chartmann1590\"")
-        buildConfigField("String", "UPDATE_REPO_NAME", "\"LiveTranscribe-Android\"")
+        // GitHub repo placeholder (self-update is disabled in release builds).
+        buildConfigField("String", "UPDATE_REPO_OWNER", "\"\"")
+        buildConfigField("String", "UPDATE_REPO_NAME", "\"\"")
 
     }
 
-    flavorDimensions += "distribution"
+    flavorDimensions += listOf("distribution", "packaging")
     productFlavors {
         create("github") {
             dimension = "distribution"
             isDefault = true
             buildConfigField("boolean", "GITHUB_SELF_UPDATE_ENABLED", "false")
-            // Cloudflare Worker (Stripe billing backend) config. Not committed â€?            // sourced from local.properties, same pattern as translate.url/stt.url.
+            // Cloudflare Worker (Stripe billing backend) config. Not committed â€”
+            // sourced from local.properties, same pattern as translate.url/stt.url.
             buildConfigField("String", "PREMIUM_WORKER_BASE_URL",
                 "\"${localProps.getProperty("premium.worker.url", "")}\"")
             buildConfigField("String", "STRIPE_PRICE_AD_FREE",
@@ -129,7 +130,8 @@ android {
                 "\"${localProps.getProperty("premium.stripe.price.pro", "")}\"")
             // Owner-only free-access key. Blank in public/CI builds; only ever set
             // in the developer's own local.properties. Must match the Worker's
-            // OWNER_ACCESS_KEY secret for the OWNER_ALLOWLIST bypass to apply â€?            // knowing the owner's email alone is not enough (see worker.js).
+            // OWNER_ACCESS_KEY secret for the OWNER_ALLOWLIST bypass to apply â€”
+            // knowing the owner's email alone is not enough (see worker.js).
             buildConfigField("String", "OWNER_ACCESS_KEY",
                 "\"${localProps.getProperty("premium.owner.access_key", "")}\"")
         }
@@ -141,17 +143,23 @@ android {
             buildConfigField("String", "PLAY_PRODUCT_AD_FREE", "\"ad_free_monthly\"")
             buildConfigField("String", "PLAY_PRODUCT_PRO", "\"pro_monthly\"")
         }
+        create("lite") {
+            dimension = "packaging"
+            isDefault = true
+            buildConfigField("boolean", "BUNDLES_WHISPER_SMALL", "false")
+        }
+        create("full") {
+            dimension = "packaging"
+            buildConfigField("boolean", "BUNDLES_WHISPER_SMALL", "true")
+        }
     }
 
     signingConfigs {
         getByName("debug") {
-            val customDebugKeystore = rootProject.file("../android-tools/story-debug.keystore")
-            if (customDebugKeystore.exists()) {
-                storeFile = customDebugKeystore
-                storePassword = "android"
-                keyAlias = "androiddebugkey"
-                keyPassword = "android"
-            }
+            storeFile = rootProject.file("../android-tools/story-debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
         }
         if (hasReleaseSigning) {
             create("release") {
@@ -233,32 +241,32 @@ dependencies {
     implementation("com.google.mlkit:translate:17.0.3")
 
     // Firebase BoM pins compatible versions of every Firebase SDK below.
-    // firebase-messaging and firebase-config were removed â€?not used.
+    // firebase-messaging and firebase-config were removed â€” not used.
 
     // Google Mobile Ads (AdMob). Powers the banner at the bottom of the
     // main UI and the app-open ad.
     implementation("com.google.android.gms:play-services-ads:23.6.0")
 
-    // ProcessLifecycleOwner â€?used by AppOpenAdManager to detect when the
+    // ProcessLifecycleOwner â€” used by AppOpenAdManager to detect when the
     // app comes to the foreground so the app-open ad can be shown.
     implementation("androidx.lifecycle:lifecycle-process:2.8.6")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.android.material:material:1.11.0")
 
-    // Play In-App Review â€?lets happy users leave a Play Store rating
+    // Play In-App Review â€” lets happy users leave a Play Store rating
     // without leaving the app. No-ops gracefully when Play Store isn't
     // installed (e.g. sideloaded github-flavor builds).
     implementation("com.google.android.play:review-ktx:2.0.2")
 
-    // Play Billing â€?playstore flavor only. Gradle auto-creates the
+    // Play Billing â€” playstore flavor only. Gradle auto-creates the
     // "playstoreImplementation" configuration from the flavor name; this is
     // what guarantees zero Play Billing code ships in the github flavor APK.
     // Pinned to 9.1.0 to satisfy Google Play's Aug 31, 2026 requirement that
     // all apps use Billing Library 8.0.0+ (9 recommended for latest features).
     "playstoreImplementation"("com.android.billingclient:billing-ktx:9.1.0")
 
-    // Chrome Custom Tabs â€?github flavor only, used to open Stripe Checkout /
+    // Chrome Custom Tabs â€” github flavor only, used to open Stripe Checkout /
     // Customer Portal URLs in-browser. No Stripe SDK, keys, or card UI is ever
     // compiled into this app; Stripe code lives entirely in the Cloudflare Worker.
     "githubImplementation"("androidx.browser:browser:1.8.0")

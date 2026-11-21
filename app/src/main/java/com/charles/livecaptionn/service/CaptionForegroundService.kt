@@ -210,6 +210,15 @@ class CaptionForegroundService : Service() {
                 failAndStop("This ML Kit language requires Pro. Choose a free language or upgrade.")
                 return@launch
             }
+            if (settings.sttBackend == SttBackend.LOCAL_WHISPER && !app.container.localWhisperClient.isSmallModelInstalled()) {
+                failAndStop(
+                    app.container.uiLocalization.latestStrings().pick(
+                        "尚未安装离线 Whisper 模型，请先在首页下载或导入模型压缩包。",
+                        "No offline Whisper model installed yet. Download one or import a model .zip first."
+                    )
+                )
+                return@launch
+            }
             if (settings.sttBackend == SttBackend.LOCAL_VOSK) {
                 val model = app.container.voskRegistry.installedModelFor(sttLanguageCode)
                 if (model == null) {
@@ -746,7 +755,7 @@ class CaptionForegroundService : Service() {
             .setContentIntent(pending)
             .setOngoing(true)
             .addAction(android.R.drawable.ic_media_pause, uiStrings["Pause/Resume"], pauseIntent)
-            .addAction(android.R.drawable.ic_lock_lock, "穿透锁定", lockIntent)
+            .addAction(android.R.drawable.ic_lock_lock, uiStrings.pick("穿透锁定", "Touch Lock"), lockIntent)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, uiStrings["Stop"], stopIntent)
             .build()
     }

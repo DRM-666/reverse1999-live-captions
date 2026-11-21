@@ -45,8 +45,9 @@ class SettingsDataStore(private val context: Context) : SettingsRepository {
             p[OVERLAY_MAX_LINES] = next.overlayMaxLines.coerceIn(1, 10)
             p[OVERLAY_THEME] = next.overlayThemeId
             p[OVERLAY_FONT] = next.overlayFontId
-            p[UI_LANG] = next.uiLanguageCode.orEmpty().ifBlank { "en" }
+            p[UI_LANG] = next.uiLanguageCode.orEmpty().ifBlank { "zh" }
             p[ONBOARDING_COMPLETE] = next.onboardingComplete
+            p[UI_DEFAULTS_ZH] = true
             p[SAVE_HISTORY] = next.saveHistory
             p[BORDERLINE_WARNING_DISMISSED] = next.borderlineWarningDismissed
             if (next.simulatedCompatibilityTier != null) {
@@ -86,8 +87,16 @@ class SettingsDataStore(private val context: Context) : SettingsRepository {
             overlayMaxLines = this[OVERLAY_MAX_LINES] ?: defaults.overlayMaxLines,
             overlayThemeId = this[OVERLAY_THEME] ?: defaults.overlayThemeId,
             overlayFontId = this[OVERLAY_FONT] ?: defaults.overlayFontId,
-            uiLanguageCode = this[UI_LANG] ?: defaults.uiLanguageCode,
-            onboardingComplete = this[ONBOARDING_COMPLETE] ?: defaults.onboardingComplete,
+            uiLanguageCode = if (this[UI_DEFAULTS_ZH] == true) {
+                this[UI_LANG] ?: defaults.uiLanguageCode
+            } else {
+                defaults.uiLanguageCode
+            },
+            onboardingComplete = if (this[UI_DEFAULTS_ZH] == true) {
+                this[ONBOARDING_COMPLETE] ?: defaults.onboardingComplete
+            } else {
+                defaults.onboardingComplete
+            },
             saveHistory = this[SAVE_HISTORY] ?: defaults.saveHistory,
             borderlineWarningDismissed = this[BORDERLINE_WARNING_DISMISSED] ?: defaults.borderlineWarningDismissed,
             simulatedCompatibilityTier = this[SIMULATED_TIER],
@@ -122,6 +131,7 @@ class SettingsDataStore(private val context: Context) : SettingsRepository {
         val OVERLAY_THEME = stringPreferencesKey("overlay_theme")
         val OVERLAY_FONT = stringPreferencesKey("overlay_font")
         val UI_LANG = stringPreferencesKey("ui_language")
+        val UI_DEFAULTS_ZH = booleanPreferencesKey("ui_defaults_zh_v2")
         val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
         val SAVE_HISTORY = booleanPreferencesKey("save_history")
         val BORDERLINE_WARNING_DISMISSED = booleanPreferencesKey("borderline_warning_dismissed")

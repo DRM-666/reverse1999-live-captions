@@ -206,4 +206,56 @@ class StoryDocumentAndWindowTest {
         assertEquals("It was the year 1861,", hit.text)
         assertTrue(hit.score >= 0.90)
     }
+
+    @Test
+    fun chapter18RealLogCases_phoneticNextLineAndLongUnpunctuatedHalfMatch() {
+        val md = """
+            ## 第 17 章
+            | 时间 | 说话人 | 中文 | 英文 |
+            |---|---|---|---|
+            | 0:00 | 伊芙琳 | 前一章开场 | It was the year 1861, a quiet town on the river bank. |
+
+            ## 第 18 章
+            | 时间 | 说话人 | 中文 | 英文 |
+            |---|---|---|---|
+            | 1:40 | 谜题之王 | 这太不公平了 | Oh no, this is so unfair, I carried you home all the way from the crime scene after you nearly passed out. I had no choice but to take away all the bad influences on your mind like a dentist pulling out rot in teeth. |
+            | 2:08 | 瓶瓶罐罐 | 没撒谎 | Evelyn, he's telling the truth. |
+            | 2:12 | 伊芙琳 | 站在那边 | What even you're take it aside. |
+            | 2:47 | 伊芙琳 | 别挡路 | This is my puzzle, my once in a lifetime case. Don't you stand in the way of it. |
+            | 2:54 | 瓶瓶罐罐 | 哎呀 | Go, blimey, Evelyn. |
+        """.trimIndent()
+        val doc = StoryDocumentParser.parse(md)
+        val matcher = StoryMatcher.fromDocument(doc, startChapter = 18)!!
+
+        val part1 = matcher.matchDetailed("This is so unfair! I carried you home all the way from a crime scene")
+        assertNotNull(part1.text)
+        val part2 = matcher.matchDetailed("All the bad inferences on your mind, like a dentist pulling out rock ditty.")
+        assertNotNull(part2.text)
+
+        val asidePre = matcher.matchDetailed("Evelyn, he's telling the truth!")
+        assertNotNull(asidePre.text)
+        val asideHit = matcher.matchDetailed("Can't get aside!")
+        assertEquals("What even you're take it aside.", asideHit.text)
+
+        val standHit = matcher.matchDetailed("Don't you stand in the way of it!")
+        assertNotNull(standHit.text)
+        val blimeyHit = matcher.matchDetailed("Go blind me, Emily!")
+        assertEquals("Go, blimey, Evelyn.", blimeyHit.text)
+    }
+
+    @Test
+    fun parseMarkdown_stripsLeadingChineseFillersAndStrayCheckmarksInEnglish() {
+        val md = """
+            ## 第 18 章
+            | 时间 | 说话人 | 中文 | 英文 |
+            |---|---|---|---|
+            | 0:00 | 伊芙琳 | …… | 哎。 |
+            | 1:00 | 伊芙琳 | 没了！ | 啊？ Oh, come. Not even one single bit left. |
+            | 1:20 | 谜题之王 | 交出什么 | MY, ✓ What's got into you this fine morning? |
+        """.trimIndent()
+        val doc = StoryDocumentParser.parse(md)
+        assertEquals("", doc.lines[0].english)
+        assertEquals("Oh, come. Not even one single bit left.", doc.lines[1].english)
+        assertEquals("MY, What's got into you this fine morning?", doc.lines[2].english)
+    }
 }

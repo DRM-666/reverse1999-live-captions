@@ -25,11 +25,10 @@ data class CaptionSettings(
     /** Pro perk. Defaults render identically to the app's original look. */
     val overlayThemeId: String = "default",
     val overlayFontId: String = "default",
-    /** Interface (UI) language, defaulting to English until the user opts in
-     *  to an on-device ML Kit translation. Not the caption source language. */
-    val uiLanguageCode: String = "en",
+    /** Interface (UI) language, defaulting to Simplified Chinese ("zh") with instant offline toggle to "en". */
+    val uiLanguageCode: String = "zh",
     /** True once the first-launch onboarding has been completed. */
-    val onboardingComplete: Boolean = false,
+    val onboardingComplete: Boolean = true,
     /** Whether completed captions should be persisted to local history. */
     val saveHistory: Boolean = true,
     /** Whether the user acknowledged/dismissed the borderline hardware warning. */

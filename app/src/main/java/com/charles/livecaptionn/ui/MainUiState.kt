@@ -30,8 +30,8 @@ data class MainUiState(
      *  to warn Play Store users before they grab a (potentially unstable)
      *  GitHub release that would break Play auto-update. */
     val installedFromPlayStore: Boolean = false,
-    /** Interface language (e.g. "es", "zh") for the app's own menus/text. */
-    val uiLanguageCode: String = "en",
+    /** Interface language (e.g. "zh", "en") for the app's own menus/text. */
+    val uiLanguageCode: String = "zh",
     /** True while an ML Kit UI-translation model downloads / strings translate. */
     val uiLocalizationBusy: Boolean = false,
     val uiLocalizationError: String? = null,
@@ -41,7 +41,7 @@ data class MainUiState(
     val uiLocalizationTranslated: Int = 0,
     val uiLocalizationTotal: Int = 0,
     /** True once the first-launch onboarding has been completed. */
-    val onboardingComplete: Boolean = false,
+    val onboardingComplete: Boolean = true,
     /** Hardware inspection results for running on-device AI models. */
     val deviceSpecs: DeviceSpecs? = null,
     /** Dismissible alert when device is unsupported for on-device AI. */

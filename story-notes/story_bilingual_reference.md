@@ -1,11 +1,11 @@
 # 《重返未来：1999》4.1 亚特兰蒂斯谋杀案 · 中英对照脚本
 
-> **说明**：本表英文为英文配音原声的逐字听写，用于核对；导入 App 的正式文件是 `story_en_for_app.txt`。
-> 中文为游戏官方中文本地化，属**意译**——句子数量、语序、措辞与英文常不对应，仅用于辅助理解剧情，**不作为英文转录的逐字校验标准**。
+> **说明**：本表英文为英文配音的听写/意译，用于核对；导入 App 的正式文件是 `story_en_for_app.txt`（由本表英文列生成）。
+> 中文为游戏官方中文本地化，属**意译**——句子数量、语序、措辞与英文常不对应。
 >
-> **已逐章通读校验 + 交叉检验修正**：用第二个独立语音模型（faster-whisper）重听 67 个问题片段，修正语义听错与乱码，德语段给出英译。错误句标「⚠ 原文 → ✓ 修正」，**学习以 ✓ 为准**。完整清单见 `中文辅助校验报告.md`、`fix_log.json`。
+> **已逐句通读全部 1,795 条并修正**：以中文原意为基准（不盲信任何单一 ASR），把"意思对不上"的句子按中文订正；第二个语音模型（faster-whisper）仅作旁证。错误处标「⚠ 原文 → ✓ 按原意修正」，**学习以 ✓ 为准**。共订正 80+ 处，含 9 条语义反转（murder→merger、heart→art、否定词漏听致反义等）、第 12 章整段德语主祷文的英译、以及大量单词级错听。完整清单见 `中文辅助校验报告.md`。
 >
-> **导入 TXT 只保留修正版**，原始错版已删除。原因：StoryMatcher 要求最佳与次优候选分差 ≥ 0.08，若错版与修正版同时在库会互为次优，反让正确输入匹配失败（实测 7 条中 3 条因此失败）；只留修正版时，0.87 的模糊阈值足以覆盖多数听写差异，实测 10 条修正句全部干净命中。
+> **导入 TXT 只保留修正版**，原始错版不进库：StoryMatcher 要求最佳与次优候选分差 ≥ 0.08，错版与修正版同时在库会互为次优反让正确输入匹配失败。
 
 ## 第 1 章
 
@@ -16,7 +16,7 @@
 | 0:29 | 劳伦斯 | 一年前，由我领导设计和建造的深海潜艇“阿尔戈号”在普利茅斯的港口下水，向大西洋深处驶去，并在预定位置向下潜入海底。 | A year passed, the submarine I designed and built christened Argo. Departed from Plymouth and commenced its descent into the depths of The Atlantic. |
 | 0:41 | 劳伦斯 | 我们的目标，就是找到遗落在深海中的古老遗迹、鲁萨尔卡种群传说中的故乡——亚特兰蒂斯。 | Our purpose to uncover atlantis, the ancient rusalki relic built upon the ocean floor. |
 | 0:49 | 劳伦斯 | 不少可敬的记者都绘声绘色地描绘了那场下水仪式，后续也不吝惜笔墨报道前几次“阿尔戈号”无功而返的场景。 | I shall not pretend it was an easy voyage. Even now, the reports published in newspapers across the country following the Argo's launch remain vivid in my memory. As to the accounts of our early failures. The commentary was. Colorful. To say the least. |
-| 1:06 | 劳伦斯 | 其中文笔最为辛辣的，非属《笨拙杂志》不可——“科幻作品的毒害性：且看雷蒙内尔家的长子如何败尽家财。” | The weekly periodical, titled the bungler distinguished itself with a particularly keen wit. Its headline read a scientific triumph Romano's heir successfully funnels funds into the ocean. Rather eloquent for a publication bearing such a name, wouldn't you agree? |
+| 1:06 | 劳伦斯 | 其中文笔最为辛辣的，非属《笨拙杂志》不可——“科幻作品的毒害性：且看雷蒙内尔家的长子如何败尽家财。” | The weekly periodical, titled the bungler distinguished itself with a particularly keen wit. Its headline read ✓ the dangers of science fiction ✓ the eldest son of the Romenel family squandering his fortune. Rather eloquent for a publication bearing such a name, wouldn't you agree? |
 | 1:25 | 劳伦斯 | 我们的确失败了很多次，甚至损失了不少优秀的水手，但我的好友萨姆·桑德兰上尉，“阿尔戈号”的船长，是一个当之无愧的战士。 | Indeed, we failed again and again. costing us a fortune. But more grievously, still costing us lives. Yet. Never abandon our pursuit. Thanks in no small part to my dear friend Samuel Sunderland, captain of the Argo. |
 | 1:45 | 劳伦斯 | 他的一生都在与海洋搏斗，技巧和勇气远超常人，再加上一些命运的眷顾，他如愿以偿地找到了被深海掩埋的亚特兰蒂斯！ | Through every setback and every storm, this devoted man of the sea stood steadfast beside us. By his skill, by the courage of our crew, and by the Grace of Providence, we at last prevailed. We had discovered atlantis resting at the floor of The Atlantic. |
 | 2:06 | 劳伦斯 | 不仅如此，萨姆·桑德兰上尉还从亚特兰蒂斯的遗迹中带回了诸多奇妙的古代遗物。这些第一次见到阳光的珍品，就陈列在各位的面前。 | The extraordinary relics you see before you stand as undeniable testimony to that discovery. ⚠ A mark of mankind's first direct encounter with the ancient civilization of thez. → ✓ The extraordinary relics you see before you stand as undeniable testimony to that discovery. A mark of mankind's first direct encounter with the ancient civilization of the Rusalki. |
@@ -28,7 +28,7 @@
 | 3:18 | 观众 | 这是多么重要的推测呀，女士。一个小小的罐子就促进了这么多知识的进步。 | Inspiring indeed mum. Who' would have thought a jug could tell us so much? HMM. |
 | 3:25 | 观众 | 这个展览的重要性几乎可以与世界博览会比肩，不然基金会也不会重视这么一个私人展会了，对吧，女士？ | Although it isn't an official event, I reckon this must be about as important as the great exhibition, what with a foundation member such as yourself being here. Am I right? Ma'am. |
 | 3:37 | 基金会官员 | 你说得没错，先生，水晶宫里的盛会至今让我记忆尤深。不过我相信“亚特兰蒂斯展览”能给我带来不一样的惊喜。 | You have a keen eye, sir. That grand occasion at the Crystal Palace was a spectacle indeed. Though I'm hoping this extraordinary exhibition of atlantis will surprise me in a different way. |
-| 3:49 | 观众 | 愿你也能享受这一次的展览，我很期待与劳伦斯商议下一次深海探索项目的投资计划。 | Well I hope you have a lovely time of it mum. Don't be looking forward to discussing the next investment venture with Lawrence. |
+| 3:49 | 观众 | 愿你也能享受这一次的展览，我很期待与劳伦斯商议下一次深海探索项目的投资计划。 | Well I hope you have a lovely time of it mum. ✓ I do look forward to discussing the next investment venture with Lawrence. |
 | 3:56 | 观众 | 不过，我打算浏览完这些展品再说生意的事。 | After I've had a thorough look through the displays, of course. Excuse me. |
 | 4:01 | 劳伦斯 | 幸会，芭万女士，没想到基金会委派来的是一位分部负责人，很高兴能得到如此的支持和重视，这对我来说意义非凡。 | Madame bovan. It is truly an honor to make your acquaintance. I confess I had not anticipated the foundation sending a branch leader to inspect our exhibition in person. I am most grateful for your presence. |
 | 4:16 | 芭万女士 | 你好，劳伦斯先生，请容许我重申基金会的立场，我们尚未表示过对雷蒙内尔家深海探索项目的支持或反对。 | The pleasure is mine, Mr romanel. As I'm sure you're aware, the foundation neither supports nor opposes your expeditions, but I'll repeat it all the same. |
@@ -51,7 +51,7 @@
 | 6:33 | 玛利亚 | 阿比盖尔说想要您陪她一小会儿，半小时后，还有一位基金会来的女士要和您见面。 | Miss Abigail wishes to see you in the school room. And you have an appointment with the foundation in half an hour. |
 | 6:41 | 玛利亚 | ……先生？ | Sir. |
 | 6:42 | 玛利亚 | ……？！ | 啊？ |
-| 6:43 | 玛利亚 | 阿尔—— | Mr Hong. |
+| 6:43 | 玛利亚 | 阿尔—— | ✓ Mr Ro— / Mr Romenel |
 | 6:45 | 玛利亚 | ——露丝！ | 啊？ Whose? |
 | 6:51 | 根特督察 | 应该快要到十字街了，芭万女士，我能从空气中闻到神秘学家那些草药和炼金术药水的味儿。 | We ought to be on cross street soon, madame bovan. I can smell the scent of herbs and potions in the air. Typical arcanist craft. |
 | 7:01 | 芭万女士 | 神秘学家有自己的生活方式，还希望根特督察多加理解。即便是服用现代药物的人，大多数也不知道那些药物是怎么生产出来的。 | They' are only living their lives inspector gent I'd bet most believers of modern medicine don't know how drugs are produced or how they work. What makes them so different from herbs and portionss? |
@@ -180,7 +180,7 @@
 |---|---|---|---|
 | 0:00 | 布兰奇 | ……布鲁姆，你就这么好客，帮着警察四处刺探，好像你也从苏格兰场拿了一份工钱。 | How very kind of you, Mr Bloom, to assist the police in collecting every scrap of information as though you were in their employ. |
 | 0:08 | 管家 | 我没有拿任何人的钱，除了阿尔伯特先生。我做的一切也都是为了他付给我的薪水。 | I receive no pay from any one but Mr romanel, as you well know, madam, I shall not neglect my duty to him, no matter what the circumstances. |
-| 0:18 | 管家 | 而且这件事也和警方的调查无关。 | Which is precisely why I must bring this matter to you. |
+| 0:18 | 管家 | 而且这件事也和警方的调查无关。 | ✓ And it has nothing to do with the police investigation. |
 | 0:22 | 管家 | 露丝在整理你的衣物时，在一些衣服上嗅到了浓烈的烟草味，就像这条丝巾上的一样。 | While sorting through your clothes, Ruth noticed a strong scent of tobacco, just like that of this scarf. |
 | 0:30 | 管家 | 阿尔伯特先生许久前就要求你戒烟。 | MR romanel requested you quit smoking long ago. |
 | 0:34 | 布兰奇 | 就非要是现在来找我说这个？ | My father has just died, Mr Bloom. Do you truly think this is the time to bring such trifling matters to my attention? |
@@ -194,7 +194,7 @@
 | 1:32 | 管家 | 我不愿意被当成是在隐瞒什么线索，但我要说，这件事和调查无关，这只是一些家庭内的私事。 | I do not wish to give the impression that I am hiding anything, madam, but I must ask that you leave us be this is a private family matter. |
 | 1:41 | 伊芙琳 | 1868年，诺伯里的一家珠宝铺接连遭窃，而破案的关键线索就在于一只过去从未在附近街区出现过的乌鸦。 | In 1868 there were a number of consecutive thefts of a jewellery shop in norbury. You know what? It helped the police crack the case. HMM. A raven that had never appeared in the neighbourhood until then. |
 | 1:58 | 伊芙琳 | 呃，好吧，我的错。我不是非要说一个故事来让你们面露疑惑，简单来说——没有什么事情是毫无关联的。 | Oh, um, not to confuse you with tails, of course, what I mean to say is sometimes the most crucial piece of information comes from the most unexpected place. |
-| 2:09 | 管家 | ……我明白你的意思。如果你坚持的话，就拿去吧。 | How astute. Hear them if you insist. |
+| 2:09 | 管家 | ……我明白你的意思。如果你坚持的话，就拿去吧。 | How astute. ✓ Have it, if you insist. |
 | 2:15 | 伊芙琳 | 谢谢。 | Thank you kindly. |
 | 2:17 | 伊芙琳 | 非常浓烈、刺鼻，而且……很粗劣。据我所知，只有两种人会抽这种烟：在经济上陷入绝境的人，以及在生活用品上毫无品味的人。 | 啊？ 喂？ Oh cow, that's a pungent one. Must be low quality tobacco. Only two types had smoked this those in the workhouses and those with a distinct lack of taste. |
 | 2:34 | 伊芙琳 | 而我恭敬地推测，布兰奇小姐应该不属于其中的任何一类吧？ | Considering your standin, miss romanell, I respectfully surmise that you don't fit either of them. |
@@ -206,7 +206,7 @@
 | 3:10 | 伊芙琳 | 喔，还有，在你们离开之前，我想问问阿比盖尔小姐在什么地方？这座宅子实在是有些太大了。 | Before you leave, could you tell me where miss Abigail is? I'll be here for ages if I search every room. |
 | 3:18 | 布兰奇 | 你说阿比盖尔？不，她太小了，而且她肯定对这场谋杀案一无所知。接受盘问不会有什么结果，只会刺激到她的神经。 | Abigail. Don't tell me you brutes are going to interrogate the poor dear. She's just a child. You'd merely scare her and gain nothing useful. |
 | 3:28 | 伊芙琳 | 碰巧的是，我不是警察。我毫无盘问和逼供的技巧，我只会非常、非常谨慎地和阿比盖尔说上两句，我能问出什么全看她愿意说多少。 | Let me tell you, miss romane, I AIN't no devious questioner like them coppers. I'll be extremely careful with my choice of words, and, of course, she'll be under no obligation to answer if she wishes. |
-| 3:42 | 伊芙琳 | 可如果这个方法行不通，我猜，死脑筋的警察将不得不用更严肃的方法从阿比盖尔口中问出一些东西，这样他们才能交差。 | And if I fail to have a chat with the little miss, whatever the reason might be, the police will take over. And from what I've seen, they won't hesitate to use asha methods to get their answers. Ew. |
+| 3:42 | 伊芙琳 | 可如果这个方法行不通，我猜，死脑筋的警察将不得不用更严肃的方法从阿比盖尔口中问出一些东西，这样他们才能交差。 | And if I fail to have a chat with the little miss, whatever the reason might be, the police will take over. And from what I've seen, ✓ they won't hesitate to use harsh methods to get their answers. Ew. |
 | 3:55 | 布兰奇 | ……好吧。阿比盖尔应该和玛利亚待在二楼的学习室里，走廊尽头就是。 | All right, you've twisted my arm. She ought to be in the school room with miss erb presently. At the end of the hall on the first floor. |
 | 4:05 | 伊芙琳 | 感激不尽，布兰奇小姐。 | You have my thanks, miss romane. |
 | 4:07 | 玛利亚 | ……受洗礼的那天到了，国王问道：“要怎么对付一个把我的王后扔到河里去的坏蛋？” | The day of the baptism had arrived. The king asked. What am I to do with the evil w witch who threw my queen into the river? |
@@ -260,7 +260,7 @@
 | 10:19 | 玛利亚 | 不算特别愉快。他的要求很高，他事先告知我，在雷蒙内尔家担任家庭教师，要承担的工作会比这个岗位通常要求的更多。 | I wouldn't say so. He told me the post entailed duties beyond those ordinarily expected of a governess. |
 | 10:27 | 玛利亚 | 他不光要求我懂两门外语，了解社交礼仪，同时希望我能讲授基础的自然科学知识，并且能够接受他小女儿频繁起夜的问题。 | He required I speak at least two foreign languages, tutor Abigail in social etiquette and the natural sciences, and look after her on the nights when she sleep walks. |
 | 10:39 | 玛利亚 | 但他愿意付出的薪资也同样很慷慨，我一周能收到5英镑。 | He was quite generous in his wages, though, offering me five pounds a week. |
-| 10:45 | 伊芙琳 | 哇哦～倒是对得起这么苛刻的要求。 | I'd near abide his anddalf for pay like that. |
+| 10:45 | 伊芙琳 | 哇哦～倒是对得起这么苛刻的要求。 | ✓ Well, I suppose that's fair pay for such demanding requirements. |
 | 10:48 | 玛利亚 | 我确实无法拒绝，这对一个独自在伦敦谋生的女性来说是一笔不菲的报酬。 | Quite right. It was good money for a woman trying to make her own living In London. I could hardly refuse the offer. |
 | 10:57 | 伊芙琳 | 在你之前，阿尔伯特聘用过其他家庭教师吗？ | Had there been any other governesses before you? |
 | 11:00 | 玛利亚 | 没有。在我来之前，照顾阿比盖尔的是她的姐姐，也就是布兰奇小姐。我想你已经见过她了。 | No. Before then, Abigail had been cared for by her elder sister, miss blanche romanel. I dare say you have met her already. |
@@ -312,7 +312,7 @@
 | 3:00 | 根特督察 | 可能是他的朋友寄给他的，但阿尔伯特只把这个当成无稽之谈，扔进火里烧掉了。 | A warning which Mr romanel did not take seriously, leading him to cast it into the fire. |
 | 3:07 | 伊芙琳 | 不是没有可能，要是我们能从阿尔伯特的社交圈里找到这么一位与他交往如此亲密的朋友就好了。 | An insight indeed. Now all we need to do is find the writer. |
 | 3:12 | 伊芙琳 | 排查起来应该不难，和阿尔伯特保持密切私交的朋友很少。 | Should be an easy enough job? Mr romane only had a small number close friends. |
-| 3:18 | 根特督察 | ……芭万女士，请问你是从哪里得到这张纸片的？ | Adam bovin. Where did you find the letter? |
+| 3:18 | 根特督察 | ……芭万女士，请问你是从哪里得到这张纸片的？ | ✓ Madame Bovan. Where did you find the letter? |
 | 3:22 | 芭万女士 | 一楼会客室的壁炉里。一张白色的纸躺在黑色的灰烬里，很显眼。 | In the fireplace of the reception room, I noticed a piece of paper lying among the ashes when I entered. |
 | 3:28 | 根特督察 | 我的人明明已经搜查过一遍房屋了，他们居然没有发现这么明显的证据？！ | I had my men search that room. How could they miss something so obvious? |
 | 3:34 | 伊芙琳 | 人总会失误嘛，根特，罪犯也一样，这才是公平竞争。芭万，你问过其他人关于这张纸的事了吗？ | Everyone makes mistakes, inspector criminals included, so it's only fair, I suppose. Madame bovan, have you mentioned this letter to anyone else? |
@@ -320,7 +320,7 @@
 | 3:52 | 管家 | ……会客室？ | The reception room. |
 | 3:55 | 芭万女士 | 没错，布鲁姆先生，你知道今天早上有谁去过一楼的会客室吗？当时房间内的壁炉是否是点燃的？ | Yes MR bloom, has anyone been there this morning? Was the fireplace lit then? |
 | 4:03 | 管家 | 只有劳伦斯先生在会客室待过，但那也是警方抵达现场之后了。他提供证词之后，就在会客室里休息。 | As far as I am aware, only Mr Lawrence has entered the room to today after the police arrived, he retreated thereafter, providing his statement. |
-| 4:14 | 管家 | 会客室的壁炉今天没有点燃过，不过昨天晚上生了火。 | As for the fireplace, it was last glitz yesterday evening. |
+| 4:14 | 管家 | 会客室的壁炉今天没有点燃过，不过昨天晚上生了火。 | As for the fireplace, ✓ it was last lit yesterday evening. |
 | 4:20 | 芭万女士 | 现在是7月，天气还不算太冷。 | Isn't it a tad early in the year to use the fireplace? It's only July. |
 | 4:27 | 劳伦斯 | 但是在深夜还是有些凉意，就像昨晚，寒风阵阵。我想你们都感受到了。 | The breeze has carried quite a chill these past few nights I am sure you must have felt it too, madame bovan. |
 | 4:35 | 劳伦斯 | 抱歉，芭万女士，刚才的那顿茶点很沉闷，我相信那只是因为屋子里的人都不知道怎么面对这个事实。 | Please allow me to apologize for the atmosphere at afternoon tea. We are still coming to terms with the fact the father is gone. |
@@ -347,8 +347,8 @@
 | 7:12 | 芭万女士 | 我明白了。根特督察，我的私人侦探需要休息了。 | I see what's happening. Inspector gent, I'm afraid my detective needs to take a break. |
 | 7:19 | 伊芙琳 | 你在说什么？这场谋杀案的调查才刚刚开始。 | What are you talking about? We were just making progress. |
 | 7:23 | 芭万女士 | 那么，你和阿比盖尔聊得怎么样？我注意到你有大部分时间都花在她的家庭教师上了，这是为什么？ | What have you learned from Abigail then? I saw you spent most of the time talking to her governess. Why was that? |
-| 7:30 | 伊芙琳 | 好吧！是有东西被我弄丢了。我想不起来为什么我的注意力会变化，但就在那一瞬间…… | ⚠ All right, all right. I did lose something from ED. I don't recall why exactly, but I got distracted and in that moment. → ✓ All right, all right. I did lose something from me, Ed. I don't recall why exactly, but I got distracted. And in that moment... |
-| 7:39 | 伊芙琳 | 我弄丢了一个想法，一件很重要的事，这件事让我转移了注意力，但我想不起来……现在就该回家去找到它！ | I lost an idea. An important one popped right out in the e and I AIN't been able to coax it back in again. I've got to go home and find it this instant. |
+| 7:30 | 伊芙琳 | 好吧！是有东西被我弄丢了。我想不起来为什么我的注意力会变化，但就在那一瞬间…… | ⚠ All right, all right. ✓ I did lose something from my mind. I don't recall why exactly, but I got distracted and in that moment. → ✓ All right, all right. I did lose something from me, Ed. I don't recall why exactly, but I got distracted. And in that moment... |
+| 7:39 | 伊芙琳 | 我弄丢了一个想法，一件很重要的事，这件事让我转移了注意力，但我想不起来……现在就该回家去找到它！ | I lost an idea. ✓ An important one popped right out of my head and I haven't been able to coax it back. I've got to go home and find it this instant. |
 | 7:48 | 芭万女士 | 承认就好，我和你一起回十字街。 | Then I'm glad we agree. Let me drive you over. |
 | 7:52 | 伊芙琳 | 不不，我坐公共马车。芭万，你应该留在这里，多和雷蒙内尔家的人聊一聊，但别让他们感觉是在被审问。 | Oh, there'll be no need for that, ma'am. I'll take a hansom cab. I need you to stay and see if you can't squeeze a bit more out of The Roman house. Just try not to make em feel like they're under interrogation, eh? |
 | 8:02 | 伊芙琳 | 根特，搜寻一下宅邸外围的线索，看能不能找到更多闯入者的蛛丝马迹。 | Inspector, might I ask that you search the grounds around the manor? See if you can find any more traces of that intruder. |
@@ -372,7 +372,7 @@
 | 10:18 | 芭万女士 | 目前为止，有什么可能的推测吗？ | Any theories thus far? |
 | 10:20 | 根特督察 | 确实有一些猜想，不过，还是去一个不容易被案件当事人听见的地方再说为好。 | Yes. But we'd best discuss it somewhere more private. |
 | 10:25 | 根特督察 | 劳伦斯。 | Lawrence. |
-| 10:27 | 芭万女士 | 你是说——阿尔伯特先生的长子，他就是嫌疑人？ | The heir of the family, he' is your primary suspect. |
+| 10:27 | 芭万女士 | 你是说——阿尔伯特先生的长子，他就是嫌疑人？ | ✓ The heir of the family? He's your primary suspect? |
 | 10:31 | 根特督察 | 没错。他的表现一直很可疑，尤其是之前伊芙琳从那位家庭教师口中得到的线索：劳伦斯曾深夜独自一人在宅邸活动。 | Yes, he's been acting suspiciously and you heard what Evelyn said the girl saw him wandering the manor alone at midnight. |
 | 10:40 | 根特督察 | 这个线索就是——那句话怎么说来着？对了，谜题的最后一块拼图。 | That there was. Um, what was the phrase? Oh, yes. The last piece of the puzzle. |
 | 10:47 | 芭万女士 | 请问推测的依据是？ | How do you prove it? |
@@ -446,7 +446,7 @@
 | 1:58 | 阿比盖尔 | 看见了呀，不是和你说过吗？ | Yes, I did. I thought I'd already told you about it. |
 | 2:04 | 玛利亚 | 劳伦斯看见你了吗？ | Did he see you? |
 | 2:06 | 阿比盖尔 | 应该没有，当时他正盯着自己手里的什么东西在看，没有注意到我。可他的表情很可怕……他生病了吗？ | I don't think so. He was staring at something in his hands with a rather frightening look on his face. Perhaps he wasn't feeling well. |
-| 2:17 | 玛利亚 | 别担心，劳伦斯最近的工作很繁忙，应该只是有些累了。不要去打扰他，好吗？ | You needn't worry. I'm sure he was only tired after the opening of the exhibition. Just leave him be would you. |
+| 2:17 | 玛利亚 | 别担心，劳伦斯最近的工作很繁忙，应该只是有些累了。不要去打扰他，好吗？ | You needn't worry. I'm sure he was only tired from his work lately. Just leave him be, would you? |
 | 2:26 | 阿比盖尔 | 嗯，反正劳伦斯也不喜欢和我说话，不过，我会听你的话的，玛利亚小姐。 | He hardly ever speaks to me anyway. But all right. I' try not to bother him since you asked me to. |
 | 2:35 | 布兰奇 | ……不管怎么说，这潜艇的生意是劳伦斯的，不是我的。 | In any case, this is Lawrence's business, not mine. |
 | 2:40 | 桑德兰上尉 | 但愿有一天你能理解我们。 | Yes, but I do hope he will come to understand us one day. |
@@ -492,14 +492,14 @@
 | 8:19 | 芭万女士 | 谁在里面？ | Who would be in there now? |
 | 8:21 | 芭万女士 | 警方对案发现场的调查已经结束了。在殡仪馆的人到来之前，非官方人员被禁止靠近尸体。 | The police have already finished investigating the crime scene. The room's been sealed until the undertakers arrive. |
 | 8:28 | 芭万女士 | 这个时候不应该有人在书房里。布鲁姆管家呢？他应该负责看住楼梯，不让其他人上楼…… | What is that Butler doing? He ought to be guarding the stairs to keep any civilians out. |
-| 8:33 | 芭万女士 | 人还在房间里。 | They're still in sight. |
+| 8:33 | 芭万女士 | 人还在房间里。 | ✓ Someone's still in there. |
 | 8:35 | 芭万女士 | 是谁在里面？！ | Who's in there? |
 | 8:36 | ？？？ | ——？！ | 啊？ |
 | 8:37 | 劳伦斯 | 等等、等等！我的天呐，我以为……抱歉，实在是失礼了，女士。 | Wait, wait, heavens, I thought oh, my apologies, madame. |
 | 8:43 | 芭万女士 | 劳伦斯先生，书房现在是案发现场，禁止任何非官方人员进入。你最好对自己的行为有合理的解释。 | Mr romanel, the study has been locked down. As you well know, non staff are prohibited from entering. Care to explain yourself? |
 | 8:51 | 劳伦斯 | ……我想起来一件事，警察在调查现场的时候遗漏了一些东西。但这不是他们的问题，因为这件事只有我才清楚。 | My apologies again, madame, but I believe the police have overlooked an important clue. Not that I blame them, for it is something only I am aware of. |
 | 9:01 | 芭万女士 | 即便如此，你也应该先向警方提出申请。还是说，你不打算把这条被遗漏的线索交给警方？ | Even so, you should have submitted an entry request first. Are you trying to hide something from us? |
-| 9:08 | 劳伦斯 | 这个，我担心…… | Of course not, madam only. |
+| 9:08 | 劳伦斯 | 这个，我担心…… | ✓ Well, I'm afraid... |
 | 9:11 | 劳伦斯 | 都怪我太愚蠢，女士！我怕这个举动让你们觉得我是在刻意引导调查方向……我希望先确认事实，再向官方提供可靠的信息。 | Ah, I wasn't thinking clearly. I was worried the police would think I was misleading them, so I wished to confirm it before I said anything that might bring suspicion upon myself. |
 | 9:22 | 芭万女士 | 在没有掌握切实证据的情况下，任何人都不会被怀疑。现在可以说说警方和我的私人侦探都遗漏了些什么吗？ | We wouldn't suspect anyone without reason, Mr Lawrence. Now. Would you care to tell me about this clue? I'm curious what both the police and my detective managed to miss. |
 | 9:35 | 劳伦斯 | 是书房的保险柜。那里面本来应该有一些东西的，可今天在现场，用父亲的钥匙打开柜子之后，那些东西不见了。 | It's the safe. Something was missing from it when I opened it for the police this morning. |
@@ -569,16 +569,16 @@
 | 4:28 | 布兰奇 | 那我希望你能留下来，劳伦斯应该不会拒绝和你签订一份新的合同。 | Then I hope you can stay. I have no doubt Lawrence would be willing to sign a new contract with you. |
 | 4:36 | 玛利亚 | 我很愿意照顾艾比，直到她成年。 | I shall be more than happy to look after Abby until she comes of age. |
 | 4:40 | 布兰奇 | 嗯……不管我喜不喜欢劳伦斯，这个家之后都是他的了。虽然遗产里也有我和艾比的份，但总归是少数。 | Good. Whether I like it or not, Lawrence will be the head of the family. Abby and I will get our share of the inheritance, of course, but it Shan't be much. |
-| 4:52 | 布兰奇 | 父亲留下的土地、产业，还有经营特权……看他会拿这些东西怎么办吧。 | None of father's land, property or business will be mine. |
+| 4:52 | 布兰奇 | 父亲留下的土地、产业，还有经营特权……看他会拿这些东西怎么办吧。 | ✓ Father's land, property and business... I wonder what he'll make of them. |
 | 4:56 | 布兰奇 | 人还是得靠自己，对吧，玛利亚？ | I suppose all a woman can count on is herself. Don't you agree, Maria. |
 | 5:03 | 伊芙琳 | ——在哪里？！ | Where is the blasted thing? |
 | 5:06 | 瓶瓶罐罐 | 呜哇—— | 哇哦。 |
 | 5:08 | 伊芙琳 | 克拉伦登广场？不。边上一些的……火车站？不，不，找过了，没戏！ | Clarendon now not even close the train station? No, no, I checked that one already. |
 | 5:15 | 伊芙琳 | 电缆街边上的铁路——去过！十字街的每一条小巷，还有诺克福德奶奶的帽子店……不，全都没有！ | The railway near cable street? Not there. The alleys of cross street, granny rochford's hat store. I can't find it anywhere. |
 | 5:25 | 瓶瓶罐罐 | 伊芙琳，快说说你在找谁？ | Evelyn, who is it you're looking for? |
-| 5:28 | 伊芙琳 | 那个大的、八条腿的，呃——怪物，线索的小偷！ | Frickled eight legged beast, the thief of clues. |
+| 5:28 | 伊芙琳 | 那个大的、八条腿的，呃——怪物，线索的小偷！ | ✓ That great eight-legged beast, the thief of clues. |
 | 5:33 | 瓶瓶罐罐 | 噢！那个小偷，它又把你的线索偷走了。 | Oh, stole your leads again, did he? |
-| 5:37 | 瓶瓶罐罐 | 我们是你的证人，发誓绝不作伪证——那个大家伙尾随你出了门。它刚刚急匆匆地逃回家，正躲在桌子下不敢作声呢。 | As your witnesses, we swear to tell you the truth he followed you out of the door, then came hurrying back just a moment ago. He sighed in under the table as we speak. |
+| 5:37 | 瓶瓶罐罐 | 我们是你的证人，发誓绝不作伪证——那个大家伙尾随你出了门。它刚刚急匆匆地逃回家，正躲在桌子下不敢作声呢。 | As your witnesses, we swear to tell you the truth he followed you out of the door, then came hurrying back just a moment ago. ✓ He's hiding under the table as we speak. |
 | 5:50 | 伊芙琳 | …… | — |
 | 5:51 | ？？？ | ——喔！ | Ouch. |
 | 5:54 | ？？？ | 拿根棍子猛猛敲，这才不是一个侦探的办法！ | How very rude. A True Detective who never solve puzzles through violence. |
@@ -591,7 +591,7 @@
 | 6:59 | 谜题之王 | 比如说学会了看鞋印？我都不想说你在十字街的泥巴地里爬了多久才摸清里面的门道，那叫一个脏。 | At a terrible speed, might I add, you spent weeks crawling the muddy streets of cross street to master that footprint trick. Remember, you looked as ragged as a stray dog. |
 | 7:15 | 谜题之王 | 再学习、再思考下去，总有一天你会彻底发疯，或者“啪”的一声，脑袋像泥浆里的死鱼嘴里吐出的最后一颗泡泡那样——破掉。 | If you go on studying and solving cases like this, you'll go balbmy one day. or worse, your head' will pop like a rotten fish baked in the sun and what a smell that would be. |
 | 7:33 | 谜题之王 | 我才是更聪明、更会思考的那一个。把线索扔进我的肚子里，让它们慢慢被消化，最后变成答案！——多简单的办法。 | Course, if you don't wish for that to happen, I'd be more than obliged to take over. Simply throw the clues into my belly and after a moment's digestion I shall give you the answer. Simple and efficient, don't you think? |
-| 7:50 | 伊芙琳 | 停，停一下——还提这个？不不不不不……“黄金面具案”，想得起来吗？ | Oh, you're bringing that up again, are you? No, no, no, don't you remember the golden moss case. |
+| 7:50 | 伊芙琳 | 停，停一下——还提这个？不不不不不……“黄金面具案”，想得起来吗？ | Oh, you're bringing that up again, are you? No, no, no, don't you remember ✓ the golden mask case. |
 | 7:59 | 伊芙琳 | 你把线索吞下去，告诉我凶手是死者的双胞胎弟弟，差点把无辜的人送上绞刑架。见鬼的方法。 | You swallowed the clues and told me that the victim was killed by his twin brother, but he was innocent. Ah, I almost led the poor bloke to the gallows. What kind of deductive method is that? |
 | 8:12 | 谜题之王 | 十次里面，我只会错六次，这概率可算不上低了。 | Oh, four of my 10 guesses were correct. I'd say that's rather acceptable, wouldn't you? |
 | 8:20 | 伊芙琳 | 坏心眼！你说的话我一个字都不会信。这个案子我会靠我自己来破，不会让你乱来——绝不会！ | Oh shut up, you squirmy lump of jelly. I AIN't buying a single one of your smarmy words again. No, I'm cracking the case me myself this time, so you just keep well out of it. |
@@ -650,7 +650,7 @@
 | 1:54 | 玛利亚 | 它们一般不会主动攻击运河边的工人，还是说……它们又在欺负新来的人？ | It's not usual for them to attack the workers by the canal. Wait. Are they picking on a newcomer again? |
 | 2:02 | 玛利亚 | ……唉。 | 哎。 |
 | 2:04 | 玛利亚 | ——先生，请不要慌张，我来帮你赶走它们。 | Come down Siri, help you get rid of them. |
-| 2:07 |  | 哦……？！小姐，请小心——！嘿，别翻我的口袋！ | OI PAS, off you fever critters, please be careful, mom. |
+| 2:07 |  | 哦……？！小姐，请小心——！嘿，别翻我的口袋！ | ✓ Hey! Don't go through my pockets!. |
 | 2:12 |  | 别担心，先生。请退后，保护好自己。 | You needn't worry, sir. Just step back and I shall take care of this. |
 | 2:17 |  | 真感谢您，小姐，但愿没弄脏您的裙子，您看着不像是会出现在这里的…… | Thank you, mum, thank you, I hope your dress AIN't soiled on account of me. This really AIN't no place for a lady such as yourself. |
 | 2:26 |  | 没什么，这些小家伙平常不会这样，你有没有受伤？ | I am perfectly fine, sir. Though it seems the carbuncles are especially naughty to today. Are you hurt? |
@@ -688,7 +688,7 @@
 | 0:34 | 约瑟夫 | 是呀，毕竟我们都知道雷蒙内尔家发生了那样的事——一场谋杀！ | Yeah, we heard about the romanel murder. A killing at your workplace no less. |
 | 0:40 | 南希 | 咕唔…… | 嗯嗯嗯嗯。 |
 | 0:42 | 乔治 | 我简直无法想象，有谁会做出那样的事？ | Unbelievable AIN't it? Who would have done such a thing? |
-| 0:46 | 约瑟夫 | 阿尔伯特是一位多么伟大的绅士！如果没有他，港口上多少人的生活都得不到保障！ | Had not to go there, Mr Roman. It wasn't for him. I reckon half the labourers round here would have starved. |
+| 0:46 | 约瑟夫 | 阿尔伯特是一位多么伟大的绅士！如果没有他，港口上多少人的生活都得不到保障！ | Had not to go there, Mr Roman. ✓ If it weren't for him, half the labourers round here would have starved. |
 | 0:53 | 约瑟夫 | 我能猜到是谁，杰克·伯努森——那个破产的假药贩子，阿尔伯特之前的生意对手。 | I bet my head it was the phony chemist Jacob nussing who done it. He was a competitor to Mr romane, I hear. |
 | 1:01 | 约瑟夫 | 一定是他这样穷凶极恶又心怀怨恨的人，才会对阿尔伯特动如此残忍的杀心。 | Only a villain such as himself would have the nerve to kill for business. |
 | 1:06 | 乔治 | 阿尔伯特先生去世了，恐怕我们…… | 啊？ Now That Mr romana's gone, I'm afraid we. |
@@ -767,7 +767,7 @@
 | 1:49 | 伊芙琳 | 当然是去抓捕嫌犯，你认真听了吗？他今天晚上就要乘船逃走。 | Don't you pay attention? We're going after the suspect. He's leaving on a steamboat tonight. |
 | 1:56 | 伊芙琳 | 我猜他要搭乘汽船前往伦敦港，然后再换乘其他大船离开英国。中途会在莱姆豪斯换乘吗？……不，不重要，我们要在那之前抓住他。 | He's headed for the port Of London where he'll catch a ship out of England. HMM, might change boats at the limehouse actually. Never mind, we'll have him now before then. |
 | 2:06 | 芭万女士 | 给根特督察发电报，让他早些组织警力拦截嫌犯的船只？毕竟我们知道他会搭乘“泥鳅号”逃亡。 | Shall we send a telegram to have the inspector intercept the steamboat? Since we already know he's taken the mudfish. |
-| 2:13 | 伊芙琳 | 电报已经发出去了，但要按根特想的那么去做，一定只会扑一个空。 | HMM, already dead, ma'am, but he's planning to send a load of his men rushing in on the place. It's bound to fail. |
+| 2:13 | 伊芙琳 | 电报已经发出去了，但要按根特想的那么去做，一定只会扑一个空。 | HMM, ✓ already sent, ma'am, but he's planning to send a load of his men rushing in on the place. It's bound to fail. |
 | 2:21 | 伊芙琳 | 任何搜查人员靠近船坞，都会引发船坞居民的警惕。嫌犯听见风声，一定会改变计划。在河道上埋伏警方船只，结果也是一样。 | As soon as the coppers approached the dock, our suspect will be alerted and change his plan them set up. An ambush won't change nothin neither. |
 | 2:30 | 芭万女士 | 你有其他想法？ | I suppose you have a better idea then. |
 | 2:32 | 伊芙琳 | 猜对了，何不拥抱现成的新技术！雷蒙内尔家的“阿尔戈号”不就好端端地停在他们的私人码头里吗？ | MY, you are clever, course I do, we'll use the power of science the romanel submarine, the Argo is resting at their private dock. AIN't that right? |
@@ -785,7 +785,7 @@
 | 4:03 | 伊芙琳 | 先忘了玛利亚吧，看看它——多么壮观。 | Oh, we'll have to talk on that later, oh my eyes, what a beauty, how splendid this can be. |
 | 4:13 | 桑德兰上尉 | 根特督察，伊芙琳小姐，请登船吧，小心不要从甲板上滑下去了。 | Inspector gents, miss Evelyn, please come aboard. Take care when you step onto the deck. |
 | 4:19 | 伊芙琳 | 来吧，这样的机会可不多呀，根特。 | Come on inspector, AIN't every day you get the chance to board a submarine. |
-| 4:25 | 伊芙琳 | 里面还真不小。 | Blimey thing's got plenty of room. |
+| 4:25 | 伊芙琳 | 里面还真不小。 | ✓ Blimey, there's plenty of room in here. |
 | 4:30 | 桑德兰上尉 | 小心些，不要胡乱敲。你会碰到不该碰的东西的。 | Please, you mustn't go touching things willy nilly, otherwise you might get us all in a great deal of trouble. |
 | 4:37 | 伊芙琳 | 难道你们平时从来没有在这个地方磕到过脑袋吗？ | What are you telling me? You AIN't never bumped your head in here, not even once. |
 | 4:43 | 桑德兰上尉 | 我们知道哪里该碰，哪里不该碰。“阿尔戈号”的设计十分紧凑，有些开关和按钮就藏在不显眼的地方。 | We are always careful with our movements, for the Argo has a variety of switches and buttons that are tucked away in inconspicuous places. |
@@ -793,8 +793,8 @@
 | 4:55 | 伊芙琳 | 一些技术性的问题，根特。 | HMM, technology inspector. |
 | 4:58 | 根特督察 | 现在不是聊技术的时候，我们也不需要理解这艘船是怎么动起来的。还是快出发吧，桑德兰上尉，去预定的拦截地点。 | There's no time for lessons now. Best we leave this to the professionals captain to the interception site if you will. |
 | 5:06 | 桑德兰上尉 | 詹姆，下潜！ | James, take us down. |
-| 5:09 | 伊芙琳 | 喔——！你的水手没有认真清扫船舱啊，桑德兰上尉，地上这些滑溜溜的东西是什么？漏油了？ | Oh, captain, it seems your sailors have been shirking their duties. The flawney is slipperier than a pickpocket. |
-| 5:19 | 桑德兰上尉 | 哦，那只是一些魔精表皮的分泌物。 | Oh, that's great, Lucas. |
+| 5:09 | 伊芙琳 | 喔——！你的水手没有认真清扫船舱啊，桑德兰上尉，地上这些滑溜溜的东西是什么？漏油了？ | Oh, captain, it seems your sailors have been shirking their duties. ✓ This slime is slipperier than a pickpocket. |
+| 5:19 | 桑德兰上尉 | 哦，那只是一些魔精表皮的分泌物。 | ✓ Oh, that's just some secretion from a critter's skin. |
 | 5:21 | 伊芙琳 | 魔精？在潜艇上？ | What? You're keeping critters in here. |
 | 5:25 | 桑德兰上尉 | 是一条从深海中捕捞上来的软体魔精，是过去从未发现过的新品种，它本来也要作为“亚特兰蒂斯展览”的展品出展。 | Not typically, but this was a special case. We' caught a specimen of what appeared to be an undiscovered species of mollusc on a previous deep sea dive. We were hoping to showcase it at the exhibition. |
 | 5:37 | 桑德兰上尉 | 可惜它在我们上岸的时候就死了。也许是它不能适应陆地的气压，罗西旺爵士对它做过研究。 | But it perished when we went to shore sir roseworn suspected the change in atmospheric pressure was to blame. |
@@ -807,23 +807,23 @@
 | 6:23 | 根特督察 | …… | 哼。 |
 | 6:25 | 根特督察 | 是——“泥鳅号”！我看见它了！ | That's the mudfish. I see it. |
 | 6:29 | 伊芙琳 | 终于来了！ | Finally. |
-| 6:31 | 根特督察 | 越来越近了，“泥鳅号”很快就会从我们头顶飞过去。 | It's getting closer. It'll fly over us any minute. |
+| 6:31 | 根特督察 | 越来越近了，“泥鳅号”很快就会从我们头顶飞过去。 | It's getting closer. ✓ It'll pass right over us any minute. |
 | 6:35 | 伊芙琳 | 那是游过去——不能让它跑了，快上浮拦住它。 | Boats don't fly, they sail, wait, we've got to do something, get up there and stop it. |
 | 6:44 | 桑德兰上尉 | 这里的河道太窄了，这个时候上浮我们很可能会撞在一起。 | There isn't enough space for us to ascend. The chance of collision is too great. |
 | 6:50 | 伊芙琳 | 我相信“阿尔戈号”更耐撞。 | Oh, I'm sure the Argo can handle a little bump. |
 | 6:53 | 桑德兰上尉 | 不，我们可以掉头去追。 | Certainly not. We shall wait until they pass, then turn around and give chase. |
 | 6:59 | 根特督察 | 不可能，“泥鳅号”的速度太快了，比我们警队的汽船还要快不少，我们掉过头以后它绝对已经消失不见了。 | That's impossible, the mudfish is even faster than the police's steamboat, by the time we turn around, they shall be long gone. |
 | 7:08 | 根特督察 | 伊芙琳说得没错，上浮，横在河道里，我们有机会拦住它。 | Evelyn's right. This may be our only chance to stop them. We have to surface right this instant. |
-| 7:15 | 桑德兰上尉 | 我拒绝这么做，这是—— | I refuse this submarine. |
+| 7:15 | 桑德兰上尉 | 我拒绝这么做，这是—— | ✓ I refuse. This submarine— |
 | 7:18 | 根特督察 | 是，这艘潜艇是雷蒙内尔家的资产，现在正需要它发挥价值，找到谋害阿尔伯特的凶手——而阿尔伯特刚好是你可敬的赞助人！ | Yes, yes, we all know it's The Roman all's property, but is it not also fitting that it serve as a tool to find the murderer of its honourable sponsor? |
-| 7:28 | 根特督察 | 上浮！否则我会让你去苏格兰场好好解释这次妨碍公务的行为。 | Ascend now or I'll take you all to the AB for obstructing our operation. |
+| 7:28 | 根特督察 | 上浮！否则我会让你去苏格兰场好好解释这次妨碍公务的行为。 | Ascend now or ✓ I'll have you explain this at Scotland Yard our operation. |
 | 7:33 | 桑德兰上尉 | ……哼！ | 哼。 |
 | 7:35 | 桑德兰上尉 | 那就一起下地狱好了。 | Then let us descend unto hell together. |
 | 7:38 | 伊芙琳 | ——！ | 啊？ |
 | 7:39 | 桑德兰上尉 | 该死，我们撞上去了！ | For heaven's sake, did I not say we would crash? You fools. |
 | 7:44 | 根特督察 | 这是——漏水了？ | Is that a leak? |
-| 7:46 | 伊芙琳 | 快让我出去！ | Open up the axe, quick. |
-| 7:49 |  | 你、你是怎么从河水里出来的？！别挡我的路！滚开！ | Have a you're underwater, whatever, just get out of my way. |
+| 7:46 | 伊芙琳 | 快让我出去！ | ✓ Open the hatch, quick. |
+| 7:49 |  | 你、你是怎么从河水里出来的？！别挡我的路！滚开！ | ✓ How did you come out of the river water?, just get out of my way. |
 | 7:54 |  | 要么你换一个看法——我不是来抓你的，而是来给你一个机会自证清白的，这样会好受点吗？ | Think of it this way, sir. This AIN't an arrest, it's an opportunity to prove your innocence. Bet you feel better about it now, eh? |
 | 8:04 |  | 疯女人，想骗我，门儿都没有——我什么都没做！ | I'm not falling for your tricks, I didn't do anything. |
 | 8:09 |  | 至少现在不是“什么都没做”——嘿，逃跑究竟对谁有好处？配合些吧先生，别给大家添麻烦呀！ | Well, you're intentionally obstructing the line of the law and running away. That certainly won't do you any good. Just save us the trouble and turn yourself in, will you? |
@@ -834,7 +834,7 @@
 | 8:33 | 伊芙琳 | 真是没礼貌。 | M AIN't you a charmer? |
 | 8:36 | 马车夫 | ——嘿，看路！ | You there, watch out. |
 | 8:38 | 马车夫 | 别、别开枪！ | Please spare me. |
-| 8:41 | 伊芙琳 | 你中枪了吗，先生？ | Are you shocked sir? |
+| 8:41 | 伊芙琳 | 你中枪了吗，先生？ | ✓ Were you shot, sir? |
 | 8:42 | 马车夫 | 我、我——我不知道，不，好像没有，他没朝我开枪。 | I don't know. Oh, I suppose not. He didn't fire at me. |
 | 8:51 | 伊芙琳 | 那就好。躺着吧，或者随你喜欢怎么做都行。 | Oh, glad to hear it. You just lie there or do whatever else you'd like. |
 | 8:58 | 马车夫 | 我的车…… | The carriage. |
@@ -869,7 +869,7 @@
 | 1:05 | 嫌犯 | 呃……咳咳…… | 啊？ |
 | 1:07 | 玛利亚 | …… | — |
 | 1:13 | 伊芙琳 | 啧啧……竟然弄得血淋淋的。有多严重？ | MY MY what a bloody mess this is. How bad is it? |
-| 1:22 | 玛利亚 | 皮外伤。 | He'll be fine. |
+| 1:22 | 玛利亚 | 皮外伤。 | ✓ Just a scratch. |
 | 1:23 | 伊芙琳 | 呼——那么，英勇的市民小姐，在警察来之前，你有什么要解释的吗？ | 啊？ So miss erb, my courageous public servant citizen, would you mind explaining what you just did before the coppers turn up? |
 | 1:35 | 玛利亚 | 我帮你抓到了逃犯，他有可能是谋杀我雇主的凶手，我有理由出一份力。 | I merely aided you in catching the suspect. For all I know, this man may be my employer's murderer. It is only natural that I would wish to see him apprehended. |
 | 1:47 | 伊芙琳 | 这倒是个事实。好，怪我的问题不准确——你为什么会知道嫌犯的线索？又为什么会携带一把狩猎用的弩箭？先回答这两个吧。 | That's true, I suppose. Perhaps I should have asked the question in two parts, though. How did you know the suspect's whereabouts and why are you carrying a crossbow on your person? |
@@ -882,7 +882,7 @@
 | 2:39 | 根特督察 | 我看见了，他们在这儿——快！ | I see them over there on the double. |
 | 2:42 | 玛利亚 | ……我担心警察总是来得太迟。 | The police never seem to arrive in time. Do they? |
 | 2:46 | 根特督察 | 抓到的人叫罗伯特，美国人。阿尔伯特也许在新大陆有仇人。 | The suspect is named Robert Scott, an American. Perhaps Mr romanel's enemies extend to the new world. |
-| 2:54 | 伊芙琳 | 你没想过他是去找布兰奇的？ | Have you considered the possibility that you sneaked into the manor to see blanche? |
+| 2:54 | 伊芙琳 | 你没想过他是去找布兰奇的？ | ✓ Have you considered he came to see Blanche? |
 | 2:59 | 根特督察 | 这又是怎么说？ | Wherever did that idea come from? |
 | 3:02 | 伊芙琳 | 案发当天，我听见管家布鲁姆在抱怨布兰奇的衣柜里有很重的烟草味，但布兰奇说自己已经戒烟。 | On the day of the murder, I came upon the Butler's complaining about the smell of tobacco on blanche's clothes, but she insisted that she'd quit. |
 | 3:11 | 伊芙琳 | 我闻过管家用来证明气味的那条丝巾，确实有很刺鼻的劣质烟草味。而就在抓到罗伯特的时候，我在他的身上闻到了同样的味道。 | The Butler took out one of his scarves as proof. And let me tell you the thing raeked a shoddy tobacco. And I smelled the same thing on the suspect. |
@@ -901,7 +901,7 @@
 | 4:38 | 根特督察 | 所以你是来英国警告她快些还钱的。那么，布兰奇具体欠了多少钱？ | So you're a debt collector? How much does she owe? Exactly. |
 | 4:43 | 罗伯特 | 两万美元，还有点零头，但差不多就是这个数字。 | 20,000 dollars rounded down. |
 | 4:46 | 根特督察 | 真不少。但对于雷蒙内尔家来说，不是一个无法负担的数字。她是怎么欠下这么多钱的？ | A sizable sum, but not unaffordable for The Romans. Do you know why she took it out? |
-| 4:53 | 罗伯特 | 她是赌场的常客。一开始她赢得很多，人们都叫她“好运鬼布兰奇”，可后来她的运气就越来越差，但“好运鬼”想赢回本钱，没有收手。 | She gambled big winner at first folks started calling her the lucky duchess, you know, cause of the accent. Before long, though, she'd lost every Penny she'd won. |
+| 4:53 | 罗伯特 | 她是赌场的常客。一开始她赢得很多，人们都叫她“好运鬼布兰奇”，可后来她的运气就越来越差，但“好运鬼”想赢回本钱，没有收手。 | She gambled big winner at first ✓ folks started calling her Lucky Blanche, you know, cause of the accent. Before long, though, she'd lost every Penny she'd won. |
 | 5:06 | 罗伯特 | 有些放贷人知道雷蒙内尔这个姓氏，愿意借钱给她，可他们没想到布兰奇根本还不上钱。他们一开始催债，布兰奇就逃回了英国。 | She wanted to get back in the game, so she went to my employers. Since they knew the romanels, they were mighty generous with the loan. Who'd have thought Albert romanel's own daughter would run out on her debts, huh? But as soon as my employers asked for the money back, she fled to England. |
 | 5:23 | 根特督察 | 那你又是怎么闯入雷蒙内尔家的？ | How did you manage to sneak into ROA manor? |
 | 5:27 | 罗伯特 | 展览前的一夜，有很多临时工人在展厅附近走动，很容易就能混进展厅。我趁没人注意的时候撬开隔间的锁，翻窗躲到窗外的灌木丛里。 | The night before the exhibition there were plenty of temporary workers in the exhibition hall, so it was easy to slip in unnoticed when nobody was looking. I picked the lock on one of the compartments and climbed out the window into the garden. |
@@ -948,7 +948,7 @@
 | 11:04 | 伊芙琳 | 要是他们早有预谋，布兰奇也大可不必把同伙请到家里来作案。冒这个风险毫无必要。 | And it's nigh on impossible that they had plotted this in advance, otherwise they would likely have committed the murder somewhere away from her own home. |
 | 11:13 | 伊芙琳 | 还有保险柜里被偷走的文件…… | Besides, we still haven't taken the stolen letter into consideration. |
 | 11:18 | 根特督察 | 也许他们只是想从文件里找出阿尔伯特的遗嘱，确认自己能获得的遗产？ | Perhaps they ransacked the safe in hopes of finding the victim's will. |
-| 11:23 | 伊芙琳 | 在杀人之后才想起来确认遗嘱？那他们真得祈祷幸运女神亲临英格兰了。 | After the victim was dead and couldn't possibly have changed a thing. The odds certainly is lucky to have a genius like you, inspector. |
+| 11:23 | 伊芙琳 | 在杀人之后才想起来确认遗嘱？那他们真得祈祷幸运女神亲临英格兰了。 | After the victim was dead and couldn't possibly have changed a thing. ✓ Then they'd best pray for luck to smile on England. |
 | 11:32 | 伊芙琳 | 别灰心，根特，布兰奇确实有强烈的杀人动机，只是我们缺少关键的证据。 | Oh, don't look so glum, I was only having you on miss romanell' is a perfectly good motive for the murder. We just need harder evidence. |
 | 11:42 | 根特督察 | 也许这些证据对你来说还不够，可对陪审团来说，这位美国人的证词已经足够有力。 | I understand that The American statement proves little to you, but it would be quite enough to convince a jury. |
 | 11:49 | 根特督察 | 至于遗产……我们可以等律师宣布阿尔伯特的遗嘱之后，跟踪布兰奇的活动，寻找更明确的证据。 | In regard to the will and inheritance, it may serve us well to monitor miss romanma's financial movements after the reading of the will. |
@@ -999,7 +999,7 @@
 | 5:28 | 玛利亚 | 我希望通过更加正式的渠道认识我潜在的雇主。 | That's right. I chose to approach my prospective employer through a more formal channel rather than directly. |
 | 5:36 | 伊芙琳 | 雷蒙内尔家的人知道互助会的事吗？ | Do the romanel siblings know about their father's donations to the friendly society? |
 | 5:41 | 玛利亚 | 不。阿尔伯特先生不信任劳伦斯和布兰奇，他担心把钱交到他们手上不会起到应有的作用。 | I don't believe so. Mr romanel trusted neither Laurence nor blanche enough to entrust them with such a large sum. |
-| 5:49 | 伊芙琳 | 而他信任你？ | ⚠ But he trusted youwei. → ✓ Anybody trusted you, eh? |
+| 5:49 | 伊芙琳 | 而他信任你？ | ⚠ ✓ But he trusted you? → ✓ Anybody trusted you, eh? |
 | 5:52 | 玛利亚 | 我不愿意胡乱揣测他的想法……你是怎么查到互助会的事的？ | I'd prefer to avoid such assumptions. Might I ask? How did you come to know of the friendly society? |
 | 6:00 | 伊芙琳 | 我总得有些收获才行，对吧？奇怪的是，目前的证词里多次提到阿尔伯特是个守财奴，他怎么会突然开始热心于公益事业？ | My meticulous investigating had to turn up something useful, wouldn't you say? What got me curious was this why would a regular scrooge like him all of a sudden become a bleed not do gooder? |
 | 6:13 | 玛利亚 | 这个问题的答案对你有什么益处吗？ | I failed to understand. the answer to that question would help solve his murder. |
@@ -1101,7 +1101,7 @@
 | 7:21 | 劳伦斯 | 我认为他的说法很对，这两天我和律师在整理父亲的账簿，核对财产。一些繁琐的事，你不需要知道这些。 | I tend to agree with him. We have been accounting for father's assets these past few days, and their ledgers are nigh unto numerous to count. I shall not trouble you with the tedious details. |
 | 7:33 | 劳伦斯 | 令我好奇的是，我发现父亲有一项支出，虽然数额不大，但每月都定期从银行支取，用途不明。 | But there was a monthly expense which particularly caught my attention. It wasn't a significantly large sum, but its purpose was rather unclear. |
 | 7:44 | 劳伦斯 | 经过调查后，我有了一些发现。玛利亚，你知道运河工人互助会的事吗？ | After some investigation, I discovered something, miss. Are you familiar with the regent's canal friendly society? |
-| 7:53 | 玛利亚 | 是的，我知道。 | Yes, Siri am. |
+| 7:53 | 玛利亚 | 是的，我知道。 | ✓ Yes, sir, I am. |
 | 7:55 | 玛利亚 | 我一直在帮助阿尔伯特先生与码头工人建立联系，我不是有意要隐瞒，我只是在履行和我雇主的约定。 | I acted as an intermediary between Mr romanel and the canal workers. Your father asked that I not share my role with any one. It was not my intention to. |
 | 8:07 | 劳伦斯 | 我明白其中的缘由，玛利亚，我知道父亲是怎么看待我和布兰奇的。 | Say no more, miss herb. I know father never thought highly of blanche and me. |
 | 8:13 | 劳伦斯 | 你能在这个时候以诚实的态度对待我，证明我对你的看法也是正确的——你是一个值得信任的人。 | But your honesty proves my assessment of you correct. You are indeed worthy of trust. |
@@ -1118,7 +1118,7 @@
 | 9:48 | 劳伦斯 | 在没有富人施舍的时候，这些人要怎么生活呢？ | Oh. And how did these people live before we began doling out charity? |
 | 9:53 | 玛利亚 | 他们无法生活，通常会在某条巷子里死去，或者……走上犯罪的道路，劳伦斯先生。 | They didn't, sir. They either perished in the cold or tends to criminality. |
 | 9:59 | 劳伦斯 | …… | — |
-| 10:01 | 玛利亚 | 不中断现有的公益性支出，能够维护阿尔伯特先生生前的名誉。同样地，还有雷蒙内尔的名誉。 | Please, sir. If you continue Mr romanez's charitable efforts. You shall preserve the legacy of your father and of the entire romanel family. |
+| 10:01 | 玛利亚 | 不中断现有的公益性支出，能够维护阿尔伯特先生生前的名誉。同样地，还有雷蒙内尔的名誉。 | Please, sir. ✓ If you continue Mr Romenel's charitable work, you'll preserve his legacy of your father and of the entire romanel family. |
 | 10:13 | 劳伦斯 | 你说动我了，玛利亚小姐。每月500英镑的现金我仍然会按时交到你的手上，这笔钱由你自由支配。 | Very well, miss erbe, you've convinced me. 500 pounds a month to be distributed as you see fit. |
 | 10:21 | 玛利亚 | 感谢您的慷慨，先生，我会把每一个便士都花在需要它的人身上。 | Thank you for your generosity, sir. I shall ensure that every Penny goes to those who are truly in need of it. |
 | 10:29 | 劳伦斯 | 不怕你笑话，我刚刚在想的是，父亲对你的信任可能要多过于我。我有些难以释怀……但这和你无关。 | To be perfectly honest, I can't help but feel a twinge of jealousy. That father trusted you more than me is difficult to accept as a son. Not that it is any fault of yours. |
@@ -1194,7 +1194,7 @@
 | 5:08 | 劳伦斯 | ——！ | 啊？ |
 | 5:09 | 伊芙琳 | 发生什——哦…… | Huh? What? How. blimey. |
 | 5:13 | 劳伦斯 | …… | — |
-| 5:15 | 布兰奇 | 劳伦斯，这…… | F Lawrence I. |
+| 5:15 | 布兰奇 | 劳伦斯，这…… | ✓ Lawrence, this... |
 | 5:20 | 劳伦斯 | 好了，够了。 | Enough, enough. |
 | 5:22 | 劳伦斯 | 这份“声明”让我们所有人都感到震惊……但我不怀疑特里威廉律师的正直品格，他不会用一份假文件欺骗我们。 | We have all been taken aback by this news. But I shall not allow any romanel to question Mr trevelyan's professionalism. |
 | 5:31 | 劳伦斯 | 我还小的时候，也好奇过父亲依靠怎样的手段谋生，又怎样从一贫如洗走到今天这一步。 | I must admit, I myself have often wondered how father rose from poverty to immense wealth. |
@@ -1205,7 +1205,7 @@
 | 6:20 | 布兰奇 | ——！我以为…… | 啊？ I thought. |
 | 6:23 | 律师 | ——咳。简单来说，在座各位继承人的经济利益不会受到影响。有需要的话，我也可以继续为雷蒙内尔家族提供法律服务。 | In other words, none of your inheritance will be directly affected. Should you further acquire my services, I shall be happy to stay on as legal counsel for the romanel family. |
 | 6:36 | 律师 | 只不过，这可能会引发一些丑闻。 | That said, the. I'm afraid a scandal is likely inevitable. |
-| 6:41 | 劳伦斯 | 这些丑闻应该由我来承担。正好，我有意筹办一项公益性的基金，希望能借此让公众看见雷蒙内尔家做出改变的决心。 | I shall take responsibility for it. As it happens, I am already working on plans to establish a charitable foundation which ought to make clear to the public that the romanov family intends to give back to society. |
+| 6:41 | 劳伦斯 | 这些丑闻应该由我来承担。正好，我有意筹办一项公益性的基金，希望能借此让公众看见雷蒙内尔家做出改变的决心。 | I shall take responsibility for it. As it happens, I am already working on plans to establish a charitable foundation which ought to make clear to the public that ✓ the Romenel family intends to change to society. |
 | 6:55 | 劳伦斯 | 今天的不快就到此为止，各位，请离开展厅吧。我来处理打碎的展品。 | Now, ladies and gentlemen, if you would please leave the exhibition hall, I shall tend to the broken exhibit. |
 | 7:02 | 玛利亚 | 不知道艾比有没有听见展厅里的骚乱…… | I do hope Abby didn't hear the commotion. |
 | 7:05 | 伊芙琳 | ——玛利亚。 | OI, miss. |
@@ -1252,7 +1252,7 @@
 | 0:13 | 利兹 | 难道是阿尔伯特先生的女儿亲手杀害了他？ | Did she really do in her own father? |
 | 0:18 | 乔治 | 这太可怕了！ | God blimey, what the devil possessed her to do that? |
 | 0:23 | 利兹 | 是啊，女儿杀死了父亲，还是那样好的一位先生……光是想一想就觉得无比罪恶。 | Devil's the word for it to kill her own father, and a proper generous jet at that. It's nothing but downright wicked. |
-| 0:33 | 约瑟夫 | 我不知道布兰奇是一个怎样的人，但她要真这么做了，我建议给她用上比当众绞死更痛苦的刑罚！ | Well I don't know Dis miss Roman ale from Adam, but I say she deserves a death. More raaring than the colors. |
+| 0:33 | 约瑟夫 | 我不知道布兰奇是一个怎样的人，但她要真这么做了，我建议给她用上比当众绞死更痛苦的刑罚！ | Well I don't know Dis miss Roman ale from Adam, but I say ✓ she deserves a death more painful than hanging. |
 | 0:42 | 玛利亚 | 约瑟夫，对罪犯量刑是法官才有权力去做的事，我们能做的只是帮助警方调查。 | Deciding a criminal sentence is the judge's duty, not ours. We are simply assisting with the investigation. |
 | 0:52 | 约瑟夫 | …… | 哼。 |
 | 0:54 | 玛利亚 | 现在布兰奇还没有被定罪，只是官方人员已经对她有所怀疑。 | Besides, the police have yet to find any concrete evidence incriminating miss Roman. |
@@ -1261,11 +1261,11 @@
 | 1:23 | 约瑟夫 | 给你建议的人说得没错，我们走在路上，确实不像警察那么显眼。没人会注意到我们。 | And that sleuth was right. No one'll pay us no more on the streets. We were made for this Palin business. |
 | 1:32 | 利兹 | 你还是算了吧，约瑟夫，也不看看你的块头，还有这副模样，任何陌生人见了你都要被吓跑。 | Oh come on fet Joseph, AIN't you seen yourself in a look looking glass? Any fine lady who says your face would bump the other way. |
 | 1:41 | 利兹 | 再说了，你能干这样精细的活儿吗？你只会把所有事情弄得叮当作响，生怕别人不知道你在这里。 | Sides you' sure you've got the skill for the sort of work for as I can tell, you'd be clattering about like a tin pot. The whole street would know you was there in an instant. |
-| 1:53 | 利兹 | 这事儿我们得保密，千万不能让其他人知道了，是不是，玛利亚小姐？ | We've got to keep this under our RAS AIN't that right, Maria. |
+| 1:53 | 利兹 | 这事儿我们得保密，千万不能让其他人知道了，是不是，玛利亚小姐？ | We've got to ✓ keep this under our hats AIN't that right, Maria. |
 | 1:59 | 约瑟夫 | 哼——我又没说非得我亲自出马才行。扛箱子我有经验，跟踪我可没学过。 | I never said I had to be the one doing the tailing. I can hold a crank, but I AIN't sure sneaking about was one of my strengths. |
 | 2:08 | 约瑟夫 | 那就让汤姆和凯特去，他们不会说话，做这种事儿绝对是一把好手。 | What about Tom and Kate? Don't get quieter than not being able to talk. |
 | 2:14 | 利兹 | 我可以跟在布兰奇身边不被发现，就像以前在萨瑟克的时候那样…… | I can follow her without getting noticed, just like I used to back in suburb. |
-| 2:21 | 玛利亚 | 但不要从她的口袋里偷东西，利兹，谁都不想看见你因为这种事情再次被捕。 | ⚠ Just be suer to pick her pocket, Liz, the last thing we want is to see you arrested again. → ✓ Just be sure not to pick up bucket list. The last thing we want is to see you arrested again. |
+| 2:21 | 玛利亚 | 但不要从她的口袋里偷东西，利兹，谁都不想看见你因为这种事情再次被捕。 | ⚠ Just be suer to pick her pocket, Liz, the last thing we want is to see you arrested again. → ✓ Just ✓ be sure not to pick her pocket. The last thing we want is to see you arrested again. |
 | 2:28 | 利兹 | 那是当然，尊敬的玛利亚小姐，现在我是有正经工作的人。 | Rest assured, my dear Maria, I'm an honest, working woman now. |
 | 2:34 | 玛利亚 | 我们要寻找的不光是某件东西，如果她有一些不同寻常的举动，也可以告诉我。 | We're not just looking for evidence. If she does anything unusual, please let me know. |
 | 2:42 | 乔治 | 什么才算不同寻常的举动？说真的，我越来越困惑了——我们不知道该去找什么东西，也不清楚要关注什么样的事。 | Unusual? Oh, what do you mean unusual? Honestly, I'm getting more and more confused. |
@@ -1304,7 +1304,7 @@
 | 7:03 | 律师 | 不，上午那件事，劳伦斯先生不打算追究任何人的责任。他说那只是一场纯粹的意外。 | No. Lawrence has no intention of demanding compensation from any party for the incident. |
 | 7:08 | 根特督察 | 那就再好不过了…… | Is good to hear. |
 | 7:11 | 律师 | 我是代表我个人来警察厅的，我想我有义务向警方提供一些信息。 | I am here on my own behalf. After some deliberation, I have decided to provide some information that has not yet been disclosed. |
-| 7:20 | 律师 | 阿尔伯特先生在签署正式的遗嘱之后，还起草过几份新遗嘱的草稿。但它们都还没有正式生效。 | After Mr Albert romanel executed his final will, which I read this morning the. He drafted a number of revised versions. Naturally, they are only drafts and carry no legal effect. |
+| 7:20 | 律师 | 阿尔伯特先生在签署正式的遗嘱之后，还起草过几份新遗嘱的草稿。但它们都还没有正式生效。 | After Mr Albert romanel ✓ executed his final will, which I read this morning. He drafted a number of revised versions. Naturally, they are only drafts and carry no legal effect. |
 | 7:33 | 律师 | 这是其中一份原件。简单来说，遗嘱草稿和正式遗嘱的主要区别在于遗产继承人的名单。 | This is one such draft which holds a key difference. The list of beneficiaries. |
 | 7:39 | 律师 | 阿尔伯特先生想把所有的遗产留给他女儿的家庭教师，也就是玛利亚·埃尔普小姐。 | Mr romane intended to leave all of his estate to his household governess miss Maria ERP. |
 | 7:46 | 根特督察 | ——什么？！ | Good God. |
@@ -1336,7 +1336,7 @@
 | 11:12 | 阿尔伯特 | 明天是最后期限！如果你不做，我就亲自去做。 | Tomorrow is your last chance. If you won't do it, then I will. |
 | 11:20 | 伊芙琳 | 声音是从哪里传出来的？ | Where from above did his voice come from? Exactly. |
 | 11:23 | 律师 | 我不确定，他吼得很大声。但大概的方向……应该就是从书房传出来的。 | I'm not absolutely certain, but if I had to guess, it was from Mr romane's study. |
-| 11:30 | 伊芙琳 | 挨骂的倒霉鬼是谁？ | Who was a Yelena? |
+| 11:30 | 伊芙琳 | 挨骂的倒霉鬼是谁？ | ✓ Who was he yelling at? |
 | 11:32 | 律师 | 我没听见另一个人的声音，可能是对方没说话，也可能是声音太小。不过那扇房门肯定是关着的，我能听出来，阿尔伯特先生的声音很闷。 | I couldn't tell. The other person either didn't say anything or was speaking too quietly to be overheard. But I'm quite certain the two of them were inside a room. Mr Romano's voice sounded muffled. |
 | 11:46 | 伊芙琳 | 那你记不记得后来发生的事？ | And what happened after that? |
 | 11:48 | 律师 | 后来……后来我就上了楼，不过，在那之前，我听见摔门的声音，有人从二楼的走廊上离开了，还把地板踩得咚咚响。 | But then. I went upstairs, oh, but before that I heard a door slam and someone stomping off on the first floor quite heavily, as if in a huff. |
@@ -1356,7 +1356,7 @@
 
 | 时间 | 说话人 | 中文（官方意译·仅供参考） | 英文（配音原声逐字听写） |
 |---|---|---|---|
-| 0:00 | 利兹 | 玛利亚小姐，在这儿。 | Maria where air. |
+| 0:00 | 利兹 | 玛利亚小姐，在这儿。 | ✓ Miss Maria, over here. |
 | 0:02 | 玛利亚 | 利兹，包裹里的是你们找到的证物吗？ | That bag you're carrying. Does it have something of miss romane's inside? |
 | 0:08 | 利兹 | 对，我们还真找到了一些东西，这是约瑟夫捞着的，你看看。 | Yes, Joseph fished it out at the river. Take a look. |
 | 0:13 | 玛利亚 | 这是……一把钥匙？是从布兰奇身上找到的？ | A key. Why throw away such a thing? |
@@ -1372,7 +1372,7 @@
 | 1:18 | 利兹 | 不光是钥匙，我们还发现了一些事儿。汤姆和凯特盯了布兰奇好几个钟头。 | We've got something else too, Tom and Kate found it after tailing miss Romano for a few hours. |
 | 1:24 | 利兹 | 他们看见布兰奇先是去了一趟银行，也许是取了钱，然后上了马车一路往市中心去，最后进了一家航运公司的办公室。 | She went to a bank, probably to withdraw money, then took a carriage to a ship and line office. |
 | 1:30 | 利兹 | 汤姆和凯特是识字的，他们捡了一张报纸，查了查这家航运公司的船期——下周二，就有一艘开往美国的客轮。 | Thankfully, Tom and Kay are right good readers, so they checked the shipping lines schedule and you know what? There's a ship bound for America coming next Tuesday. |
-| 1:41 | 约瑟夫 | 我已经看明白了，布兰奇想在阿尔伯特的葬礼之后，立刻回到美国去。她只要一跑，就谁也找不到了！ | ⚠ It's clear as day now she's planning to scorp her out the country the minute her father's funeral is over so that no one can ever find her again. → ✓ It's clear as day now. She's planning to scourper out the country the minute a father's funeral is over so that no one can ever find her again. |
+| 1:41 | 约瑟夫 | 我已经看明白了，布兰奇想在阿尔伯特的葬礼之后，立刻回到美国去。她只要一跑，就谁也找不到了！ | ⚠ It's clear as day now she's planning to scorp her out the country the minute her father's funeral is over so that no one can ever find her again. → ✓ It's clear as day now. She's planning to skip the country the minute a father's funeral is over so that no one can ever find her again. |
 | 1:51 | 玛利亚 | 她并没有隐瞒过自己想要快些去美国的事实。 | To be fair. She never made a secret of the fact that she wished to return to America as soon as possible. |
 | 1:59 | 利兹 | 那就看看这个吧，玛利亚小姐。这足够给她定罪了。 | Oh, Maria, you won't defend her no more when you see this. |
 | 2:03 | 玛利亚 | “……明天能拿到钱，别来找我。 “B……7月2日。” | I will get you the money tomorrow. Leave me alone. B. Second of July. |
@@ -1387,7 +1387,7 @@
 | 3:01 | 乔治 | 我不懂法律，也不愿意相信阿尔伯特先生的女儿是杀人凶手，可这些东西……任谁看了都会觉得是布兰奇干的。 | I don't know a thing about the law and I hate to think That Mr romana was murdered by his own daughter. But with everything we've found. Anyone would think miss Romano did it. |
 | 3:12 | 玛利亚 | 谢谢你们。我会把这些证物交给调查人员的，他们会做出更专业的判断。 | In any case. I want to sincerely thank you all for your help. I shall hand these over to the police and allow them to make their judgments. |
 | 3:24 | 利兹 | 能帮到你就再好不过了，玛利亚小姐。我们真心希望找到谋害阿尔伯特先生的凶手。 | Of course, Maria. We want to catch Mr Ron Nell's killer just as much as you do, no matter who they are. |
-| 3:31 | 利兹 | 还需要我们再盯着布兰奇吗？ | Do you need us to keep tailing, miss Romano. Dost say the word of so. |
+| 3:31 | 利兹 | 还需要我们再盯着布兰奇吗？ | ✓ Do you need us to keep tailing her? Just say the word. |
 | 3:36 | 玛利亚 | 嗯，我担心还有什么更关键的线索被忽视了，请求你们再花些时间观察一下布兰奇接下来的动向。 | Yes, if you would. There might be some clues we have overlooked. |
 | 3:41 | 伊芙琳 | 呵——来得早确实有好处。 | The early bird catches the worm, eh? |
 | 3:47 | 伊芙琳 | 应该没人会打扰我们的工作了，芭万。 | Not a soul about to bother us at this time, mum. |
@@ -1404,7 +1404,7 @@
 | 4:39 | 留守的工人 | 出去——这儿不欢迎你们！ | Get out, you AIN't welcome here. |
 | 4:41 | 伊芙琳 | 看起来他不是真心在提问——芭万，我说过我有备用方案。 | It seems our gentleman here is rather averse to conversation, but don't you worry, ma'am, I always have a backup plan. |
 | 4:50 | 芭万女士 | 你认为让你的委托人参与到这场打斗中是一件得体的事吗？ | Do you really think it's appropriate to involve your client in a brawl? |
-| 4:54 | 伊芙琳 | 那至少帮我望望风！哎呀！ | Can at least be my lookout. |
+| 4:54 | 伊芙琳 | 那至少帮我望望风！哎呀！ | ✓ You can at least be my lookout! |
 | 4:57 |  | 停手，伊芙琳，我们不是来斗殴的，别真的伤害到他。 | That's enough, Evelyn. We're not here to cause harm or trouble. |
 | 5:01 |  | 我完完全全赞同你的意见，芭万。 | I couldn't agree more, mum. |
 | 5:05 | 留守的工人 | 唔唔…… | 嗯。 |
@@ -1415,7 +1415,7 @@
 | 5:29 | 芭万女士 | 请谅解，我们这么做只是为了调查一起谋杀案的真相。 | Please forgive us, sir. We're only doing this to uncover the truth behind a murder. |
 | 5:35 | 芭万女士 | 为什么不等到逮捕布兰奇之后再来做这种事？ | I have to ask why couldn't we investigate this place after miss romane's arrest. |
 | 5:41 | 伊芙琳 | 证物就像阳光下的巧克力一样，是会慢慢融化变形的。 | Cause evidence is like chocolate mum. Leave it out in the sun too long and it'll melt into a right mess. |
-| 5:47 | 伊芙琳 | 很有意思的是，案件“曝光”的那一刻，就像把巧克力放在太阳底下，然后——你觉得没意思？ | Interestin AIN't it? How with every passing moment, the case becomes more and more. Find that interesting. |
+| 5:47 | 伊芙琳 | 很有意思的是，案件“曝光”的那一刻，就像把巧克力放在太阳底下，然后——你觉得没意思？ | Interestin AIN't it? How ✓ with every passing moment, the case grows colder. Don't you find that interesting? |
 | 5:56 | 伊芙琳 | 别在意了，我想说的只是——呃，早起的鸟儿有虫吃。 | Anyway, what I was trying to say was the early bird catches the worm. |
 | 6:01 | 伊芙琳 | 对了，替我和这位先生聊聊，就问他是不是刚巧参与过跟踪布兰奇的行动，有没有什么收获。 | Oh, right. Could you ask the gentleman if he's discovered anything from tail and miss romane. |
 | 6:06 | 伊芙琳 | 如果你有了收获而我还没有，就请你先把消息带给根特督察。 | If I turn out empty handed and he's got something useful, take the news straight to gent, will you? |
@@ -1442,7 +1442,7 @@
 | 1:21 | 阿尔伯特 | ——我真的不在乎他们有多少悲惨和痛苦。 | I truly do not care whether they thrive or suffer. |
 | 1:28 | 布兰奇 | 就在这里说吧，玛利亚。 | Whatever it is you wish to say, say it here. |
 | 1:31 | 布兰奇 | 不是你要约我见面吗，为什么又像是没有话说？——最好快些，看见那些乌云了吗？马上就要下雨了。 | Well, Maria. You'd better hurry. Those clouds are looking like rain. |
-| 1:36 | 玛利亚 | 我只是在想我应该如何开口，布兰奇。 | Miss home and I I. I' am simply unsure of how to begin. |
+| 1:36 | 玛利亚 | 我只是在想我应该如何开口，布兰奇。 | ✓ Miss Blanche. I'm simply unsure of how to begin. |
 | 1:42 | 布兰奇 | 是，从公布遗嘱之后你就表现得很奇怪，现在竟然连如何开口都不知道了。 | 哼。 First, you act utterly bizarre after the reading of the will yesterday, and now it seems to have rendered you unable to speak at all. |
 | 1:52 | 玛利亚 | 你在美国真的欠下了一笔赌债吗？ | Is it true that you fell into significant debt while In America? |
 | 1:56 | 布兰奇 | ——谁告诉你的？！ | Who told you that? |
@@ -1460,7 +1460,7 @@
 | 3:06 | 布兰奇 | 还有谁看过这些东西？！ | You didn't show them to anyone else, did you? |
 | 3:11 | 玛利亚 | 警方还不知道它们的存在。 | If by that. you mean the police. Then no. |
 | 3:15 | 布兰奇 | …… | — |
-| 3:18 | 布兰奇 | 你把它们拿到我面前晃荡，而不是去找警察。你想要什么？——如果是阿尔伯特给你的不够多，我还可以再分你一万英镑。 | So you brought them to me first. I see. You want more? Is that it? I'll give you another 10,000，would that satisfy you? |
+| 3:18 | 布兰奇 | 你把它们拿到我面前晃荡，而不是去找警察。你想要什么？——如果是阿尔伯特给你的不够多，我还可以再分你一万英镑。 | So you brought them to me first. I see. You want more? Is that it? ✓ I'll give you another 10,000 pounds. Would that satisfy you? |
 | 3:34 | 玛利亚 | 请别这样猜测我的动机，布兰奇，我找你来不是为了钱，只想听一听你对它们的解释。 | You needn't speculate about my intentions, miss romanel. All I want is an explanation directly from you. |
 | 3:43 | 布兰奇 | 我的解释？呵，不如说说你是怎么想的。 | An explanation. Perhaps you'd like to explain why you've set up this little interrogation first. |
 | 3:53 | 玛利亚 | ……你伪造了阿尔伯特先生保险柜的钥匙，从里面取走了钱，然后杀死了他。如此一来，你不光能还清债务，还能分到一笔遗产。 | Dissatisfied with your inheritance alone? You forged this key to open your father's safe. Steal the money inside. And kill your father. Securing enough funds to pay off your debts while keeping a tidy sum for yourself. |
@@ -1475,7 +1475,7 @@
 | 5:05 | 布兰奇 | 但唯独杀死阿尔伯特不是我干的——这就是我能告诉你的全部真相。 | But I did not kill him. 对。 You have my explanation. |
 | 5:11 | 玛利亚 | 你可以为你的话提供更多证据吗？也许那位私人侦探可以帮你证明你说的话—— | Do you have any evidence to prove it? Maybe the private detective could help you too. |
 | 5:18 | 布兰奇 | 疯了吗？！谁会相信我说的——在看见这把钥匙和这封信之后？我不会蠢到去冒这个险。 | Do you think me a fool? Who on earth would believe such words once they've seen what's in your hands? |
-| 5:24 | 布兰奇 | 我不知道你为什么要这么做，难道……非要把我逼成替罪羊才能让你安心？ | Why must you drive me to desperation? Maria. WHY MR. Wait. You wish to sing me hanged, don't you. To make me your scapegoat. |
+| 5:24 | 布兰奇 | 我不知道你为什么要这么做，难道……非要把我逼成替罪羊才能让你安心？ | Why must you drive me to desperation? Maria. WHY MR. Wait. ✓ You wish to see me hanged, don't you? To make me your scapegoat. |
 | 5:37 | 玛利亚 | 我……安心？ | MY. Scapegoat. |
 | 5:40 | 布兰奇 | 为什么之前在教堂的时候，你说你对劳伦斯在找的那封信一无所知？——为什么要在我面前撒这种荒唐的谎？ | The letter Lawrence was tearing up the place for. You were quite the actor when you said you had no knowledge of it. Why commit to such an absurd lie? |
 | 5:51 | 玛利亚 | 我真的从来都不知道那封信的存在，是什么让你认为我没有说实话？ | That letter. I swear to you, miss romanel, I knew nothing of it. Why would you think I would lie about that? |
@@ -1511,7 +1511,7 @@
 | 0:36 | 伊芙琳 | 善良的夫人非常爱惜继女的美貌，以至于不愿意让她轻易示人，以免引来烦恼和争议。 | For years, to shield her from unwelcome attention, her warm hearted stepmother kept her hidden away in their manor, rarely allowing her to be seen. |
 | 0:46 | 伊芙琳 | 不幸的是，某一天，女孩罕见地离开了家门，在跟随一名猎人外出狩猎时于森林中不幸走失，至今下落不明。 | But tragedy was destined to strike the family once more. One day, the girl made the rare decision to join a huntsman on a hunt and vanished, never to be seen again. |
 | 1:00 | 伊芙琳 | 当地治安人员在周边的树林里找到了一些新鲜的血迹和杂乱的脚印，却没有发现任何尸体…… | The local magistrate found fresh blood stains and scattered footprints in the forest, but no body was ever recovered. |
-| 1:10 | 玛利亚 | ……这是当地报纸上的故事，但并不是真相。 | That is what the newspaper described. Mere fabrications, all of it. |
+| 1:10 | 玛利亚 | ……这是当地报纸上的故事，但并不是真相。 | ✓ That's what the newspaper said, but it's not the truth. |
 | 1:17 | 玛利亚 | 父亲再婚后，我的日子并不愉快。继母虽然能迷惑我的父亲，但无法说服他取消我的第一继承权，为此她一直记恨在心。 | After my father remarried. My life was anything but warm. His new wife had been attempting to convince him to disinherit me as heir. But it was to no avail. And for that. Her hatred of me only grew deeper. |
 | 1:39 | 玛利亚 | 她把我锁在家中，不允许我和外人接触，好让所有人都忘记我的存在。她用饥饿和寒冷折磨我，指望着病痛把我带走。 | She locked me in the house. Cutting any contact I had with the outside world. She tormented me with hunger and cold. Praying that illness should quietly take my life. |
 | 1:56 | 玛利亚 | 没过多久，她也有了自己的孩子，终于下定决心要让我彻底消失。 | Some time later. She had a child of her own. That was when she resolved to be rid of me for good. |
@@ -1526,9 +1526,9 @@
 | 3:42 | 玛利亚 | 他们把我带去一座空置的厂房，分享了一些面包和干净的衣服。工人们告诉我，这些东西都来自于一个好心的财主。 | They made me a simple bed in a deserted workshop. Shared their food and clothing with me. And told me that it all came from a generous business man. |
 | 3:54 | 玛利亚 | 而这位财主刚好在寻觅一位家庭教师。 | And that this generous business man was in need of a governess. |
 | 3:58 | 阿尔伯特 | 我想，我能说的也就只有这么多了。 | I suppose that is all I have to say. |
-| 4:03 | 阿尔伯特 | 讽刺的是，这是我人生中唯一一次，恐怕也是最后一次倾吐心事，而听我说这些话的人居然是你。 | How ironic that the first and likely last time I have ever laid my heart bare it is to you four people. |
+| 4:03 | 阿尔伯特 | 讽刺的是，这是我人生中唯一一次，恐怕也是最后一次倾吐心事，而听我说这些话的人居然是你。 | How ironic that the first and likely last time I have ever laid my heart bare ✓ it is to you. |
 | 4:14 | 阿尔伯特 | 而你呢，又一直很沉默—— | And that you have been nothing but silent. |
-| 4:20 | 阿尔伯特 | ——玛利亚·冯·文特塔尔。这才是你的名字，对吗？ | ⚠ Maria von winterthol that is your true name, is it not? → ✓ Maria von Winterthal. That is your true name. Is it not? |
+| 4:20 | 阿尔伯特 | ——玛利亚·冯·文特塔尔。这才是你的名字，对吗？ | ⚠ ✓ Maria von Winterthal that is your true name, is it not? → ✓ Maria von Winterthal. That is your true name. Is it not? |
 | 4:29 | 玛利亚 | 念出这个名字的时候，你应该感到羞愧。 | You should be ashamed to even utter it. |
 | 4:33 | 阿尔伯特 | 我就知道没有看错——黑色的头发，雪白的皮肤……你和你母亲很像。 | Black hair, fair skin, you look every bit like your mother. |
 | 4:39 | 阿尔伯特 | 你很骄傲，甚至没有改变头发的颜色。 | Your pride in her must have overtaken you, for you did not even think to disguise yourself. |
@@ -1560,7 +1560,7 @@
 | 8:56 | 布兰奇 | “我没有杀死阿尔伯特”——你猜有多少人说过这句话？你这么说又有多大的意义？ | I did not kill Mr romanel. Does that claim still hold any value with how often it has been repeated? |
 | 9:05 | 玛利亚 | 我在雷蒙内尔家生活了两年，如果我真的想杀他，那早就可以动手了。 | I have been working in your household for two years, miss romanel. If I truly intended to kill him. I would have done it long ago. |
 | 9:15 | 布兰奇 | 你需要足够的时间伪装自己，扮演一个家庭教师，直到没有任何人会怀疑你是杀人凶手。 | To win our trust was precisely your plan. Who would ever suspect the loyal family governess? |
-| 9:22 | 布兰奇 | 但是你最近遭到了恩佐的袭击，知道自己的身份暴露，留给你的时间不多了。于是那天晚上，你找父亲对峙……最终你还是没有放过他。 | But that Italian's death made you anxious. It is exposed who you truly are so you confronted father that night and you. You had your revenge. |
+| 9:22 | 布兰奇 | 但是你最近遭到了恩佐的袭击，知道自己的身份暴露，留给你的时间不多了。于是那天晚上，你找父亲对峙……最终你还是没有放过他。 | But that Italian's death made you anxious. ✓ You realized who you truly are had been exposed so you confronted father that night and you. You had your revenge. |
 | 9:35 | 布兰奇 | 可……可这一切都不重要。听我的，你有机会把这件事干得更漂亮些，不留一点儿痕迹。 | But none of that matters anymore. You can still make a clean getaway of this. |
 | 9:41 | 玛利亚 | ……你在想什么，布兰奇？ | Whatever do you mean? |
 | 9:43 | 布兰奇 | 好好想想，对我们不利的证物就在你手上，你可以毁掉这些信，然后也替我毁掉那把钥匙。没了它们，我们就安全了。 | Think about it, the key, the letters just destroy them and we're safe, the both of us. |
@@ -1600,12 +1600,12 @@
 | 0:27 | 瓶瓶罐罐 | 早安，伊芙琳！今天你打算做些什么？要写一封信给你的那位同行，让对方出一道新的谜题吗？ | Well, good morning to you too, Evelyn, what exciting adventures are you up to to today, eh? Writin another letter to your detective friend ask asking for a new puzzle. |
 | 0:38 | 伊芙琳 | ……？ | 啊？ |
 | 0:40 | 伊芙琳 | 谜题？——啊，当然好，再来一次是吧？相当好——不，不对不对，停一下！ | A new puzzle, right? Yeah, absolutely right, no, no, no, that's not right at all. |
-| 0:48 | 伊芙琳 | 我不要新的谜题，有一个谜题就快要解开……呃，在哪里？！嗯？ | I don't need a new puzzle cause I'm very close to cracking the current one oh, but I can't seem to remember I put the blasted thing. Where have all the pieces gone? |
+| 0:48 | 伊芙琳 | 我不要新的谜题，有一个谜题就快要解开……呃，在哪里？！嗯？ | I don't need a new puzzle cause I'm very close to cracking the current one oh, but ✓ I can't seem to remember where I put the blasted thing. Where have all the pieces gone? |
 | 1:00 | 伊芙琳 | 没了，没有了？！——全部……一点都没有了！ | 啊？ Oh, come. Not even one single bit left. |
 | 1:07 | 伊芙琳 | 不对不对不对…… | Oh, this is bad, this is bad, this is bad, bad, bad. |
 | 1:12 | 谜题之王 | 早安，早安。 | Good morning to you. |
 | 1:15 | 伊芙琳 | 这真是太过分了！交，出，来！ | Enough of your games. Hand him over now. |
-| 1:20 | 谜题之王 | 这大清早的，我要交出什么来？ | MY, who put a bee in your bonnet this fine morning and what over. |
+| 1:20 | 谜题之王 | 这大清早的，我要交出什么来？ | MY, ✓ What's got into you this fine morning, and what should I hand over?. |
 | 1:27 | 伊芙琳 | 所有东西！我不知道弄丢了什么，但它们一定在你身上！ | Everything, whatever I'm missing, you must have stolen from me. |
 | 1:33 | 伊芙琳 | 绝对，不会有，任何时候——我的脑子里什么都没有，一定是有东西被偷走了。 | There is no way, chance nor possibility that I'm completely out of my ideas. Give him back. |
 | 1:40 | 谜题之王 | 这太不公平了，伊芙琳，明明是我救了你，你差点就要在犯罪现场昏过去了。我帮你把不好的东西都拿走了，就像牙医拔掉一颗坏牙一样。 | Oh no, this is so unfair, I carried you home all the way from the crime scene after you nearly passed out. I had no choice but to take away all the bad influences on your mind like a dentist pulling out rot in teeth. |
@@ -1625,17 +1625,17 @@
 | 3:22 |  | 我看你不如去做些别的，比如开家糖果店，卖点儿真正的糖果……反正不当侦探什么都行！ | Why not do something else? HMM, maybe open a sweet shop and sell some ordinary sweets? Anything but this. |
 | 3:36 |  | 是啊，好孩子，你都累坏了，快休息休息吧…… | He's right, you know you're exhausted, you poor girl, you need to take a rest. |
 | 3:43 |  | 你，闭嘴；你们——也闭嘴！我会变成什么，没人说了算！ | Shut your mouth, OA. No one but me can decide what I'll be, you understand. |
-| 3:51 |  | 你不能拒绝我们有目共睹的善意呀。 | Oh, what a thing to say, we only mean to do what's best for you. |
+| 3:51 |  | 你不能拒绝我们有目共睹的善意呀。 | Oh, what a thing to say, ✓ we only mean to do what's best for you. |
 | 3:58 |  | 比起真相、不算！其他都不算什么！思考、思考——我，会，解开——这个谜题！ | The only thing that matters is the truth. I have to think think I will solve this puzzle. |
-| 4:07 |  | 咳咳——现在停手，我就当什么都没发生过，不会起诉你人身伤害罪，这主意怎么样？ | ⚠ Listen, if you stop this right now, I shall put everything aside and not press charges for you except on me live. What do you say? → ✓ Listen, if you stop this right now, I shall put everything aside and not press charges for your attempt on me live. What do you say? |
-| 4:24 |  | 是——吗？！真有意思！我倒一点儿也不觉得神圣的天然权利和你有半点儿关系——怪东西。 | Oh, you won't, will you? I wasn't aware that tentacle breaks out any rights under the law. |
+| 4:07 |  | 咳咳——现在停手，我就当什么都没发生过，不会起诉你人身伤害罪，这主意怎么样？ | ⚠ Listen, if you stop this right now, I shall put everything aside and not press charges for you except on me live. What do you say? → ✓ Listen, if you stop this right now, I shall put everything aside and ✓ not press charges for your attempt on my life. What do you say? |
+| 4:24 |  | 是——吗？！真有意思！我倒一点儿也不觉得神圣的天然权利和你有半点儿关系——怪东西。 | Oh, you won't, will you? I wasn't aware that ✓ any natural right has anything to do with you. |
 | 4:31 |  | 看来我要靠更特殊的手段来维护自己的权利了。 | Then it seems I will have to resort to more extreme measures. |
 | 4:41 |  | 来吧，决斗——一场决斗！但愿你别手下留情……不可能输！ | Go on then, do your worst. There AIN't no way I'm losing to AC clankin muzz of metal like you. |
 | 4:49 |  | 呼……你可真够有决心的，但我还是对你的职业规划持保留意见。 | Oh, you're more relentless than I thought. Still, it don't abate my reservations over your choice of profession. |
 | 5:01 |  | 哈！管你有什么意见，憋回你的铁肚子里去！ | Ha, you can take all your bright ideas on the matter and shove em in your metal belly. |
 | 5:08 |  | 既然你非要这么做，那我只好把那些东西原样奉还……要是你再晕过去，那可和我没有半点儿关系！ | Fine, since you insist, I'll return all the clues. But let me be clear, it AIN't my fault if you pass out again. |
 | 5:21 | 谜题之王 | 伊芙琳…… | 哎。 |
-| 5:24 | 谜题之王 | 好吧，我来告诉你发生了什么。让我把属于你的东西一点点还给你。 | Fine, I'll tell youwhat happened, Andre, return the missing pieces to you. |
+| 5:24 | 谜题之王 | 好吧，我来告诉你发生了什么。让我把属于你的东西一点点还给你。 | Fine, ✓ I'll tell you what happened, and return the missing pieces to you. |
 | 5:33 | 谜题之王 | 昨天你在家里思考了一整天，到了晚上也没有吃一点儿东西，到月亮高高挂的时候，你突然从房间里冲了出去。 | Yesterday you spent the whole afternoon doing nothing but thinking and thinking you didn't even eat any tea. Then in the evening you suddenly ran out the front door. |
 | 5:48 | 谜题之王 | 我们不知道你是想到什么了，就一直跟着你，直到抵达雷蒙内尔家那幢漂亮的宅子附近。当时天上已经开始下雨，天黑得像乌鸦的羽毛。 | We had no clue what was on your mind, but we followed you anyway till you came to a stop near romanelle manor. |
 | 5:59 | 谜题之王 | 一开始你什么也没有看见，之后是一声像闷雷的枪响。你跑了过去……看见玛利亚小姐死在了面前。 | It was rain and dark as anything. You couldn't see a thing, but you did hear a gunshot or maybe a clap of thunder, so you ran towards it and you found Maria dying before your eyes. |
@@ -1643,7 +1643,7 @@
 | 6:25 | 玛利亚 | 伊、伊芙琳……小姐？ | 嗯。 没事。 E Evelyn. |
 | 6:32 | 伊芙琳 | ……！ | — |
 | 6:35 | 谜题之王 | 这下你搞懂了吧？ | You understand me now, don't you? WHY? I kept it from you. |
-| 6:43 | 伊芙琳 | 玛利亚……跟踪布兰奇，是我要她去的。是我……枪伤，在她胸口——布兰奇随身的手枪？去过美国，欠债——防身的武器…… | Missha, I asked you to tell miss romanel it was all because of me, chest rolls, gunshots miss romanella has a gun, she got into debt In America. She needed it for self defense. |
+| 6:43 | 伊芙琳 | 玛利亚……跟踪布兰奇，是我要她去的。是我……枪伤，在她胸口——布兰奇随身的手枪？去过美国，欠债——防身的武器…… | Missha, I asked you to tell miss romanel it was all because of me, ✓ chest wound, gunshot... Miss Romenel had a gun, she got into debt In America. She needed it for self defense. |
 | 6:59 | 伊芙琳 | 玛利亚不想她——不，是，是这样……应该想到…… | Even so, miss herb wanted to protect no, yes, I should have realized it sooner. |
 | 7:08 | 伊芙琳 | 是我……是我—— | It was me. |
 | 7:12 | 伊芙琳 | ——是我太蠢了。 | I was so stupid. |
@@ -1669,9 +1669,9 @@
 | 9:05 | 芭万女士 | 这应该对你恢复状态有所帮助。 | I hope they lift your spirits. |
 | 9:07 | 伊芙琳 | 噢，当然——这太有帮助了，现在警方采取了什么行动？ | Oh, they're lifting me spirits, all right, what's the copper's next move. |
 | 9:12 | 芭万女士 | 根特督察带人重新封锁了雷蒙内尔家的宅邸，目前涉案人员——包括布兰奇——都还被暂时扣押在宅邸里接受问询，没有转移到警察厅。 | Inspector gent and his men have walked down the manor again. Everyone involved, includingudin miss romanel, is being held inside for further questioning. |
-| 9:20 | 伊芙琳 | 很好，走，证词我路上再认真看看。但愿能打到一辆不那么摇晃的马车。 | Sandy let's get going then and make it a smooth ride, eh? I've got to read these statements on the way. |
+| 9:20 | 伊芙琳 | 很好，走，证词我路上再认真看看。但愿能打到一辆不那么摇晃的马车。 | ✓ Let's get going then, and hope for a smooth ride, eh? I've got to read these statements on the way. |
 | 9:27 | 芭万女士 | 路上？你要去哪里？ | On the way to where? |
-| 9:29 | 伊芙琳 | 当然是雷蒙内尔家——线索、嫌疑人、执法人员，全部到齐，我该把答案也带过去了。 | Raelle manor, of course. Where else suspects coppers missing pieces? All the crockery's on the table and it's time I poured the tea. |
+| 9:29 | 伊芙琳 | 当然是雷蒙内尔家——线索、嫌疑人、执法人员，全部到齐，我该把答案也带过去了。 | Raelle manor, of course. ✓ Suspects, police, and missing pieces, all in one place. Time to pour the tea. and it's time I poured the tea. |
 | 9:40 | 伊芙琳 | 布兰奇伪造了钥匙，还有这封信……她确实为了还钱而有所行动。 | Miss romane forged a key and wrote a letter to Mr Scott. She was certainly making moves towards clearing her debt. |
 | 9:47 | 伊芙琳 | 噢，这位名叫利兹的工人说，玛利亚推测布兰奇在外还另有住处——了不起的推测，没有她我们可能真的找不到布兰奇的钥匙和信件。 | Oh, this labourer who goes by the name of Liz says it was miss erb who theorized miss romane had another residence. Brilliant girl, eh? Like as not, we'd never have found this key and letter if it weren't for her. |
 | 10:00 | 伊芙琳 | 至于玛利亚——玛利亚·冯·文特塔尔，背负着悲惨的过去和谋杀阿尔伯特的强烈动机…… | Speakingin o miss erbe, her true name's Maria von winterthor, and given her tragic past, she certainly had the motive to kill Albert romanel. |
@@ -1680,7 +1680,7 @@
 | 10:23 | 芭万女士 | 基金会的检测人员从中不仅检测出毒素，还发现了相当危险的神秘术残留。此外，一些特殊术法的副作用使这颗苹果在长达两年的时间里都未腐败。 | Our analyst found not only poison, but also traces of fatal incantations on it. of course, some arcane technique was used to keep the apple fresh. |
 | 10:34 | 伊芙琳 | 这起案件和神秘学无关。毒苹果不是作案工具。 | Our case AIN't got nothin to do with arcanum, and certainly not that poisoned apple. |
 | 10:40 | 芭万女士 | 这就需要你来给出解释了。 | All right, then I look forward to hearing your explanation. |
-| 10:44 | 伊芙琳 | 首先回答一个衍生问题——杀死玛利亚的不是布兰奇。 | Before all else, we ought to crack our newest puzzle, miss romane did not kill miss. |
+| 10:44 | 伊芙琳 | 首先回答一个衍生问题——杀死玛利亚的不是布兰奇。 | Before all else, we ought to crack our newest puzzle, ✓ Miss Romenel did not kill Maria. |
 | 10:51 | 芭万女士 | 什么？ | How do you know? |
 | 10:54 | 伊芙琳 | 这是她亲口告诉我的，我发现玛利亚的时候，她还有最后一口气。 | Maria told me herself with her very last breath. |
 | 10:58 | 伊芙琳 | 她在当晚确实见过布兰奇，但开枪的不是她，而是躲在草丛里的其他人——很可能是其他为了拿到继母的赏金而谋害玛利亚的刺客。 | She did indeed meet with miss romane last night, but the shooter was someone one else hiding near by, probably another assassin sent by her stepmother. |
@@ -1694,7 +1694,7 @@
 | 时间 | 说话人 | 中文（官方意译·仅供参考） | 英文（配音原声逐字听写） |
 |---|---|---|---|
 | 0:00 | 根特督察 | 人都到齐了。 | It seems everyone is in attendance. |
-| 0:03 | 伊芙琳 | 好，我为受害者的哀悼也结束了——包括玛利亚小姐——那就开始吧。 | Good cause my mournin o MR romane and miss erb has just concluded. Let's begin, shall we? |
+| 0:03 | 伊芙琳 | 好，我为受害者的哀悼也结束了——包括玛利亚小姐——那就开始吧。 | ✓ Good. Cause my mourning for Mr Romenel and Miss Erbe has just concluded. Let's begin, shall we? |
 | 0:09 | 伊芙琳 | 四天前，这座宅邸的主人，阿尔伯特·雷蒙内尔先生被人发现于自己的书房中遇害。 | Four days ago, Albert romanel, patriarch of the romanel family, was found dead in a study at this very manor. |
 | 0:17 | 伊芙琳 | 在那之后，认真负责的苏格兰场督察根特先生和，呃，也是认真负责的基金会官员芭万女士，以及本人—— | Following that, investigations were carried out by the dedicated inspector gent of Scotland Yard and, ER, the equally dedicated madame bovin of the foundation. Oh, and me selff, of course. |
 | 0:31 | 伊芙琳 | 围绕着案件展开了一系列调查，诸如此类，如此这般……这些全部跳过。 | Statements were taken, clues were gathered, and so on and so forth, but let me skip to the meat of the matter. |
@@ -1705,12 +1705,12 @@
 | 1:04 | 芭万女士 | 安静，先生，听伊芙琳小姐把话说完。她是我雇佣的私人侦探，在此次案件中，也代表了圣洛夫基金会伦敦分部的立场。 | She is both a detective and a servant representative for the saint Pablo foundation. Now, if you would, please allow her to give her verdict. |
 | 1:13 | 伊芙琳 | 因为劳伦斯撒过谎，所以我首先纠正一下被他的证词扭曲的事实，顺带解释劳伦斯在案发之后都干了些什么。 | First, allow me to point out the lies in Mr romane's statement and explain his actions after committing the murder. |
 | 1:20 | 伊芙琳 | 他说自己没有看过保险柜里遗失的信件——这是谎言，原因稍后解释。 | He claimed to know nothing of the contents of the letter taken from his father's safe, a blatant deception, the reason for which I shall explain later. |
-| 1:31 | 伊芙琳 | 劳伦斯通过信件得知了玛利亚的身份，以及她和阿尔伯特，还有“水巷谋杀案”死者的关联。据此他构思出了栽赃玛利亚的方法。 | In reading the letter, Lawrence learned of miss erb's true identity, as well as a hidden connection to Albert romanell and the water lane victim so. He utched a plan. |
+| 1:31 | 伊芙琳 | 劳伦斯通过信件得知了玛利亚的身份，以及她和阿尔伯特，还有“水巷谋杀案”死者的关联。据此他构思出了栽赃玛利亚的方法。 | In reading the letter, Lawrence learned of miss erb's true identity, as well as a hidden connection to Albert romanell and the water lane victim so. ✓ He hatched a plan. |
 | 1:43 | 伊芙琳 | ——只要等警方在保险柜里搜到书信，就能立刻将他们的注意力引到玛利亚身上。 | He ensured the police found the letter, that way all attention would be drawn to miss erb and not to him. |
 | 1:51 | 劳伦斯 | 我昨天才知道玛利亚是个什么样的人，你怎么证明我读过那封信？还有，它不是被布兰奇拿走了吗？ | I don't suppose you have any proof on that matter. Besides, hadn't blanche already taken it by then? |
 | 1:58 | 伊芙琳 | 如果你没读过那封信，为什么会一口咬定那就是关键线索？当然，这不足以证明什么。 | If you'd truly never read the letter, why would you have been so sure? It was a vital clue. Still, words alone are no concrete evidence. |
 | 2:07 | 伊芙琳 | 真正的矛盾是，芭万在壁炉里找到了信件烧剩下的残骸，好巧不巧，布兰奇保留了完好无损的信件。这么看，其中总有一个是假货。 | What is concrete, however, is the contradiction between the burnt letter madame bovin found in the fireplace and the complete one in miss romane's possession. One of them had to be a forgery. |
-| 2:21 | 伊芙琳 | 把纸张扔进点燃的壁炉，不可能留下如此整齐的灼烧痕迹；信件上的笔迹相当生涩，显然是写信人不希望暴露自己的字迹而故意为之…… | For a piece of paper thrown into a burning fireplace, its burn marks were far too neat and tidy, and Anne w writing was terribly awkward, as if the writer was trying to conceal their identity. |
+| 2:21 | 伊芙琳 | 把纸张扔进点燃的壁炉，不可能留下如此整齐的灼烧痕迹；信件上的笔迹相当生涩，显然是写信人不希望暴露自己的字迹而故意为之…… | For a piece of paper thrown into a burning fireplace, its burn marks were far too neat and tidy, and ✓ the writing was terribly awkward, as if the writer was trying to conceal their identity. |
 | 2:34 | 伊芙琳 | 这说明壁炉里的信件残骸才是被刻意伪造出来的线索。 | As I am sure you've all surmised, this suggested that the burnt letter was a fake, deliberately forged by someone to mislead our investigation. |
 | 2:43 | 伊芙琳 | 接下来的问题是，谁会伪造它？ | The only question was. By whom? |
 | 2:47 | 伊芙琳 | 布兰奇手里本来就有原件，伪造没有意义。玛利亚？——更是没有理由去暴露自己。 | Miss Romano. She had little reason to forge another letter when she already ad the original, and miss erbe had even less reason to spill all her secrets. |
@@ -1720,7 +1720,7 @@
 | 3:16 | 伊芙琳 | 我正要排除这个可能性。这全在于我对根特督察的信任。 | I was just getting there. That possibility can be ruled out courtesy of the ever dedicated inspector gent. |
 | 3:23 | 根特督察 | 我？ | Me. |
 | 3:24 | 伊芙琳 | 没错，就是你，根特。你在发现信件残骸之前就搜查过宅邸，却没有在任何一座壁炉中见过它，那就证明这个线索在当时并不存在。 | Yes, you gent, you'd already had your men search every inch of the manor, including all its fireplaces. No copper would overlook such an obvious clue. |
-| 3:34 | 伊芙琳 | 要真觉得苏格兰场的督察能忽视这么显眼的线索，那就太愚蠢了。劳伦斯先生——唯一的嫌疑人——是你弄巧成拙了。 | You didn't really think the detective inspector's Scotland Yard wouldn't notice somethingin appearing out of thin air, did you? Lawrence romane, the only suspect with both the motive and opportunity to forge evidence? You dug your own grave, sir. |
+| 3:34 | 伊芙琳 | 要真觉得苏格兰场的督察能忽视这么显眼的线索，那就太愚蠢了。劳伦斯先生——唯一的嫌疑人——是你弄巧成拙了。 | You didn't really think the detective inspector's Scotland Yard ✓ wouldn't notice something appearing out of thin air, did you? Lawrence romane, the only suspect with both the motive and opportunity to forge evidence? You dug your own grave, sir. |
 | 3:53 | 劳伦斯 | …… | 嗯。 |
 | 3:54 | 伊芙琳 | 我也非常非常讨厌弄巧成拙的滋味，但不幸的是，我无法与你共情。 | ⚠ Must feel orrible digging your own six feet, but I have to apologize for I don't feel sorry for you one bit. → ✓ Must feel horrible digging your own six feet, but I have to apologise, for I don't feel sorry for you one bit. |
 | 4:02 | 伊芙琳 | 警方打开保险柜之后，你才知道，那份对你的栽赃计划来说万分关键的证物消失了。于是你造了一个赝品，将它小心翼翼地放在壁炉里。 | It was only after the police opened your father's safe that you realized the letter you could have used to frame us up had vanished. Desperate, you chose to fabricate a duplicate, singed its edges and placed it in the fireplace. |
@@ -1737,7 +1737,7 @@
 | 5:27 | 布兰奇 | 劳伦斯，你彻底发疯了吗？！ | Lawrence, have you descended utterly into madness? |
 | 5:31 | 布兰奇 | 虽然我已经承认保险柜里的钱和信件是我偷的，但我绝对没有杀死父亲的想法！ | Yes, I admitted to stealing from father's safe, but how could you possibly suggest that I might be his murderer. |
 | 5:38 | 劳伦斯 | 她们每个人都比我的动机要强烈，还有直接指向她们的物证。 | They both had far stronger motives than I did, and there was physical evidence tying them to the crime. |
-| 5:44 | 伊芙琳 | 确实，直到一个——三个？总之，忘了是几个小时之前，我都没有排除你们中的任何一个人。 | Right you are. In fact, they've been at the top of my suspect list until about an hour ago. Or maybe free. |
+| 5:44 | 伊芙琳 | 确实，直到一个——三个？总之，忘了是几个小时之前，我都没有排除你们中的任何一个人。 | Right you are. In fact, they've been at the top of my suspect list ✓ until about an hour ago. Or maybe three. |
 | 5:52 | 伊芙琳 | 但正好是你提到的物证帮我排除了布兰奇和玛利亚的嫌疑。 | In any case, it's the very evidence you just mentioned which clears both ladies of the crime. |
 | 5:58 | 劳伦斯 | 真是荒唐的说法。 | How thoroughly absurd. |
 | 6:01 | 伊芙琳 | 如果布兰奇要杀死阿尔伯特，好获得遗产、偿还债务，那根本没必要伪造一把钥匙，还偷走保险柜里的现金，给自己制造一堆麻烦。 | Let's put ourselves in miss romane's shoes. Why bother forging a key to steal the money if you are planning to kill the man and inherit his estate anyway? |
@@ -1755,7 +1755,7 @@
 | 7:39 | 伊芙琳 | 我曾有幸参观过潜艇“阿尔戈号”，那时就有一个担忧在我脑子里打转，“阿尔戈号”那薄薄的一层铁皮能在超过30英尺深的水下保持原样吗？ | Ever since I boarded the Argo, there's been a question nagging at me could an iron hold that thin even withstand pressure at depths greater than 30 feet? |
 | 7:50 | 伊芙琳 | 就算我不清楚亚特兰蒂斯究竟在哪里，那它肯定也要藏得比30英尺更深才对吧？ | Now, I AIN't been to atlantis me myself, but I'm fairly certain it lies a fair sight deeper than that. |
 | 7:57 | 伊芙琳 | 之后发生的一件事，加深了我对展品造假的怀疑——很多人应该亲眼见过，宣布遗嘱的那天，一件展品就在我现在站着的位置被打碎了。 | Later, I witnessed an incident that further proved the exhibits were forged. In fact, many of you saw it yourselves. On the day Albert romanel's will was read, one of the exhibits shattered into pieces right where I'm stand now. |
-| 8:15 | 伊芙琳 | 根特还为此焦虑了相当长的一段时间，毕竟犯事的有可能是警方人员，而这样珍贵的展品，连一块碎片也是价值连城。 | Ha, you ought to have seen how vexed that god gent if held responsible for breaking an artifact from an ancient civilization, he and his men would have been done for. |
+| 8:15 | 伊芙琳 | 根特还为此焦虑了相当长的一段时间，毕竟犯事的有可能是警方人员，而这样珍贵的展品，连一块碎片也是价值连城。 | Ha, ✓ you should have seen how vexed poor Gent was, fearing he'd be held responsible for breaking an artifact from an ancient civilization, he and his men would have been done for. |
 | 8:27 | 伊芙琳 | 可劳伦斯的处理方式让人怀疑他是否有基本的文物常识和经商头脑——他打包好碎片，像扔垃圾一样扔进了后院的灰坑里。这不对吧？ | But our Lawrence romanell did nothing but pack up the shattered pieces and throw em into the ash pit as if they were nothing but rubbish. Don't that strike you as odd? |
 | 8:39 | 伊芙琳 | 要不是根特承受不了进一步的精神压力，我当时就会去坑里把包裹挖出来看看。当然，现在也不迟。要一起去挖宝吗，劳伦斯？ | I'd have dug out those fragments meself if gent hadn't been near in a heart attack. In fact, it AIN't too late to do so. Care for a treasure hunt, Mr romane? |
 | 8:51 | 劳伦斯 | 去你的…… | You conniving little. |
@@ -1774,7 +1774,7 @@
 | 11:00 | 伊芙琳 | 接下来要说的，就纯属个人猜测。 | Now, the following is purely my personal speculation. |
 | 11:04 | 伊芙琳 | 罗西旺爵士是个知识丰富的海洋神秘学生物专家，也是阿尔伯特的挚友。加之在展览前“不慎死亡”的海洋魔精…… | Remember sir rosewarne, the accomplished biologist specialised in arcane marine creatures and close friend of Albert romanell, and that critter which conveniently died shortly before its exhibition. |
 | 11:19 | 伊芙琳 | 应该是罗西旺爵士在检查魔精样本之后，发现这只魔精不属于声称发现了亚特兰蒂斯的海域。 | Rosewan must have realized it couldn't have come from atlantis after running an examination. |
-| 11:25 | 伊芙琳 | 他向阿尔伯特提出怀疑，而后者希望朋友先对此保密，给劳伦斯一个承认错误的机会，可是……咳咳，老天，我的嗓子要冒火了。 | ⚠ Lawrence requested rosewn keep it a secret on the grounds that he'd quit deceiving the public and admit his fraudulence. However, cleinia could drink a river dry right now. → ✓ Lawrence requested Rosewarne keep it a secret. On the ground said he'd quit deceiving the public and admit his fraudulence. However, blimey, I could drink a river dry right now. |
+| 11:25 | 伊芙琳 | 他向阿尔伯特提出怀疑，而后者希望朋友先对此保密，给劳伦斯一个承认错误的机会，可是……咳咳，老天，我的嗓子要冒火了。 | ⚠ Lawrence requested rosewn keep it a secret on the grounds that he'd quit deceiving the public and admit his fraudulence. However, cleinia could drink a river dry right now. → ✓ Lawrence requested Rosewarne keep it a secret. ✓ on the grounds that he'd stop deceiving the public and admit his fraudulence. However, blimey, I could drink a river dry right now. |
 | 11:39 | 芭万女士 | 给，已经为你准备好了。 | I knew you'd need some water here. |
 | 11:41 | 伊芙琳 | 桑德兰上尉，能不能让我休息一会儿，你来告诉各位，罗西旺爵士去了哪里？ | 哎。 Captain Sunderland, would you mind taking over for a moment? Perhaps tell us where Mr roseworn is currently. |
 | 11:52 | 伊芙琳 | 他真的去旅行了吗？还是说，他的尸体已经和被杀害的魔精一起，沉在了泰晤士河里？ | ⚠ Has he really set sail overseas as you said, or is he lying at the bottom of the Thames alongside that sorry critur? → ✓ Has he really set sail overseas, as you said, or is he lying at the bottom of the Thames alongside that sorry critter? |
@@ -1787,10 +1787,10 @@
 | 12:34 | 桑德兰上尉 | ……当晚我、劳伦斯和罗西旺爵士确实在展厅里喝酒，但这是计划好的一部分。爵士的酒里加了水合氯醛——一种新的安眠药物。 | On that wicked night. Lawrence and I were sharing a drink with sir roseworne here as we had planned. During which we s slipped chloral hydrate. A newly developed potent hypnotic. In a rose one in the glass. |
 | 12:50 | 桑德兰上尉 | 0点过后，我们回房间睡觉。按照计划，大概在2点……劳伦斯进了阿尔伯特先生的房间。 | We returned to our respective chamber shortly after midnight. And at around two am, Lawrence entered Mr romane's chamber. |
 | 12:58 | 桑德兰上尉 | 我要做的就是在第二天上午，趁罗西旺爵士清醒之前将他送走。理由是送他登上前往中美洲的轮船。 | My duty was to get rid of sir rosewarne in the early morning before he awoke. The pretext for his disappearance being in that. He had boarded a ship bound for Central America. |
-| 13:11 | 根特督察 | 那罗西旺爵士现在已经…… | Then sir, roseworm is ready. |
+| 13:11 | 根特督察 | 那罗西旺爵士现在已经…… | ✓ Then Sir Rosewarne is... |
 | 13:13 | 桑德兰上尉 | 也许是不幸中的万幸，既然只是要让他闭嘴，我就还有别的办法。 | Nay. Fortunately, I had other methods to guarantee his silence. |
 | 13:19 | 桑德兰上尉 | ……罗西旺爵士没有死，他现在就被关在“阿尔戈号”上。我可以带你们去找他。 | He's alive. Locked inside the Argo. I can take you to him if you wish. |
-| 13:26 | 根特督察 | 布兰奇会以盗窃罪被起诉，桑德兰是劳伦斯的共犯，再加上一个非法囚禁，至于劳伦斯——那不必多说了。陪审团会决定他们的命运。 | Miss romanel shall be prosecuted for the theft, Sunderland for unlawful imprisonment and acting ASMR romanel's accomplice. And Mr Roman. Well. We all know what he did. Either way, the jury shall decide their fates. |
+| 13:26 | 根特督察 | 布兰奇会以盗窃罪被起诉，桑德兰是劳伦斯的共犯，再加上一个非法囚禁，至于劳伦斯——那不必多说了。陪审团会决定他们的命运。 | Miss romanel shall be prosecuted for the theft, Sunderland for unlawful imprisonment and ✓ acting as Mr Romenel's accomplice. And Mr Roman. Well. We all know what he did. Either way, the jury shall decide their fates. |
 | 13:44 | 根特督察 | 唉——结案的速度比我想的要快。把伊芙琳找来是一个明智的决定，芭万女士。 | HMM, I must say the case was solved rather quicker than I thought. You made an excellent choice in bringing miss Evelyn along, madame bovan. |
 | 13:55 | 芭万女士 | 算不上是我的功劳。 | You know, the credit is hardly mine. |
 | 13:57 | 伊芙琳 | ……可怜的孩子，她刚刚在展厅里全程一声没吭。 | Poor thing, she didn't even make a sound in the exhibition hall. |
@@ -1825,7 +1825,7 @@
 |---|---|---|---|
 | 0:00 | 伊芙琳 | …… | 哎。 啊？ |
 | 0:03 | 伊芙琳 | 差不多了。 | There. |
-| 0:05 | 伊芙琳 | 没猜错的话，你身体的其他部分也在这里。 | Heart to be close enough to the rest of your body. |
+| 0:05 | 伊芙琳 | 没猜错的话，你身体的其他部分也在这里。 | ✓ Here to be close enough to the rest of your body. |
 | 0:08 | 伊芙琳 | 安息吧，去过印度还有重婚罪的律师先生。 | Rest in peace, my dear bigamous lawyer. |
 | 0:11 | 伊芙琳 | 就这样吧，该去找下一位了。 | All right, on to the next grave. |
 | 0:14 | 伊芙琳 | 你好——开门！ | Hello? Anybody home? Open up. |
@@ -1842,15 +1842,15 @@
 | 1:12 | 伊芙琳 | 按照你“遗嘱”的吩咐，我第二天就告诉她你很快就会回来——阿比盖尔眼珠转了转就相信了，还答应不对任何人说这件事。 | I told her you'd return soon like you asked. She believed it without a doubt and promised not to tell anyone of it. |
 | 1:19 | 伊芙琳 | 对了，我把你说的“很快”改成了“三个月”，这段时间内你最好别公开露面，另外，不管你多喜欢玛利亚这个名字，也别再用了。 | Oh, but I did take the liberty to adjust your soon to three months. Best ensure you remain unseen until then. And better change your name too. I'm sure the name Maria's on the mind to many. |
 | 1:33 | 玛利亚 | 公众对犯罪事件的关注应该不会持续三个月这么久的。至于名字……来这儿的路上我想起了一个曾经听过的故事——佩施塔，你觉得如何？ | I hardly expect the public will pay attention to the case for that long. As for my name. What do you think about perha? Her story came to mind on the way here. |
-| 1:45 | 伊芙琳 | 保持低调的时间还有新的尊称，全由你自己说了算。可以回答我的问题了，对吧？ | Haydn naaman, it's all up to you really now you finally ready to answer me questions. |
+| 1:45 | 伊芙琳 | 保持低调的时间还有新的尊称，全由你自己说了算。可以回答我的问题了，对吧？ | ✓ The time and the new name are up to you. Now, are you ready to answer my questions?. |
 | 1:52 | 佩施塔 | 当然，我欠你很多答案。 | I'd be glad to. |
 | 1:54 | 伊芙琳 | 我见过一些假死的戏码，但这么真实的还是第一次，我猜……是你身上那些小玩偶的功劳？ | I've seen fake death tricks before, but none is authentic as yours. It's got something to do with those little dolls on you, don't it? |
 | 2:03 | 佩施塔 | 把它们当成我的“护身符”吧，在我遭受致命伤害的时候，这些小家伙能把我从地狱的边缘拉回来。 | Yes. If ever I' am to suffer a fatal wound. These lucky charms pull me back from the edge of oblivion. |
 | 2:12 | 伊芙琳 | 啊——神秘术。 | Ah, arcanum, I ought to have known. |
 | 2:16 | 伊芙琳 | 你倒在地上交代遗言的时候，脸上的表情实在不像是一个将死之人。 我看见这些小玩偶在微微发光，还有你最后没说完的那句“不用担心”…… | I did think you didn't look quite like you were dying and then I noticed your dolls were glimmering in the darkness. Not to mention that your final words were don't worry. |
 | 2:27 | 伊芙琳 | 可如果不是你亲口验证了我的猜测，谁敢咬定这些小玩偶有死而复生的神秘学效用？ | Who would have thought you could use arcanum to come back to life. |
-| 2:31 | 佩施塔 | 容我纠正一下你的看法，它们并不具备让人“死而复生”的能力。准确来说，那一枪没有真正杀死我。 | I believe a clarification is due. But us cannot return the dead to life. For when I was shot, I did not die. |
-| 2:41 | 佩施塔 | 我只是在恢复的过程中陷入了一段时间的假死。好在葬礼结束得很快，不然很难不暴露。 | Brother, I entered a near death state for a period of time. Thankfully my funeral ended before anyone noticed anything odd. |
+| 2:31 | 佩施塔 | 容我纠正一下你的看法，它们并不具备让人“死而复生”的能力。准确来说，那一枪没有真正杀死我。 | I believe a clarification is due. ✓ But they cannot return the dead to life. For when I was shot, I did not die. |
+| 2:41 | 佩施塔 | 我只是在恢复的过程中陷入了一段时间的假死。好在葬礼结束得很快，不然很难不暴露。 | ✓ I merely entered a near-death state while recovering for a period of time. Thankfully my funeral ended before anyone noticed anything odd. |
 | 2:51 | 伊芙琳 | 这下没人知道玛利亚·冯·文特塔尔还活着了，除了我和阿比盖尔。 | And now nobody in the entire world knows that Maria von winterthorpe still lives, save for me and Abigail, that is. |
 | 2:59 | 佩施塔 | ……你会因为案件涉及神秘学而困扰吗？ | Might I ask? When a case involves arcanum. Does it bother you? |
 | 3:07 | 伊芙琳 | 千万别这么想，神秘学犯罪调查也是我擅长——呃……有所涉及的专业。 | Of course not. Arcane criminal investigation is precisely, well, sort of my area of expertise. |
@@ -1871,7 +1871,7 @@
 | 5:17 | 伊芙琳 | 阿尔伯特一定知道你在想什么，可他仍然将阿比盖尔交给你照顾，同时还把一部分公益事业交给你管理。 | ⚠ So MR romanell knew you were planningnin his murder right under his nose, yet he still entrusted his own daughter in the family society donations to you. → ✓ So Mr. Romenel knew you were planning his murder right under his nose, yet he still entrusted his own daughter in the family society donations to you. |
 | 5:28 | 伊芙琳 | 你问过他这么做的理由吗？ | Did you ever ask him why? |
 | 5:31 | 佩施塔 | 问过，但他没有回答。我猜他心中有一些古怪的判断——正因为我是来找他复仇的人，他才愿意给予我信任。 | I did. But he never answered. I suspect he held some peculiar logic. That it was precisely because I sought revenge against him that he could trust me. |
-| 5:44 | 佩施塔 | 他认定我绝不会亏待阿比盖尔，会按照他期望的方式教育她，我也一定不会为了贪图他的钱财而做些什么。 | He was convinced I would keep Abby from harm. TUT to her in the way he wished. And that I had no interest in his family or his fortune. |
+| 5:44 | 佩施塔 | 他认定我绝不会亏待阿比盖尔，会按照他期望的方式教育她，我也一定不会为了贪图他的钱财而做些什么。 | He was convinced I would keep Abby from harm. ✓ teach her in the way he wished. And that I had no interest in his family or his fortune. |
 | 5:56 | 佩施塔 | 毕竟，我想要的只是取他性命而已。 | All that I sought to take from him. Was his life. |
 | 6:00 | 伊芙琳 | 我试着理解看看，连同遗嘱里给你的一万英镑一起……那布兰奇呢？ | HM, a curious relationship indeed. ⚠ I shall have to take some time to wrap me headad around that one and the 10,000 pounds you left you what about miss romanel? → ✓ Hmm, a curious relationship indeed. I shall have to take some time to wrap my head around that one, and the £10,000 you left here. What about Miss Romenel? |
 | 6:13 | 伊芙琳 | 你没有原谅阿尔伯特，却原谅了布兰奇——不管你怎么说，那一枪只可能是布兰奇开的。 | You won't forgive Mr romanell, but you've already forgiven his eldest daughter. Regardless of your last words, there AIN't no one who could have shot you but her. |
@@ -1880,7 +1880,7 @@
 | 6:42 | 伊芙琳 | 她是不用上绞刑架了，但她之后也许会伤害更多人——这些弯弯绕绕的东西还蛮复杂的吧。 | Well, you saved her from the gallows, that much is for sure, but she may go on to hurt more people once she's freed. Ugh. Blimey, it's all rather complicated, AIN't it? |
 | 6:55 | 佩施塔 | 那你又是怎么想的，为什么帮我撒这个谎？ | It was not just me who saved her. You also decided to spare her in the end. Why do such a thing? |
 | 7:03 | 伊芙琳 | 因为我也弄不明白这些事，所以从来不去想。我关心的只有真相，还有逝者的遗愿。 | I can't make sense of that meself, but nothing matters more to me than uncovering the truth and respecting the dying wishes of my fellow man. |
-| 7:12 | 伊芙琳 | 你不想让布兰奇顶上谋杀罪，那我可以帮个忙。 | And if your dying wish was to clear miss romanell, o the suspicion o murderin you, then so be it. |
+| 7:12 | 伊芙琳 | 你不想让布兰奇顶上谋杀罪，那我可以帮个忙。 | And ✓ if your dying wish was to clear Miss Romenel of the suspicion of murdering you, then so be it. |
 | 7:18 | 佩施塔 | 布兰奇一定知道是我的“遗言”让她免于背上谋杀的罪名。而她的盗窃行为是坐实的，这会让她在监狱里待上一段时间。 | Miss romanel must be aware that it was I who saved her. But her theft was proven beyond doubt. So she shall certainly be spending some time in prison. |
 | 7:29 | 佩施塔 | 我会在她出狱之后见她一次，如果她在服刑之后仍然没有任何改变……那也只能翻出这桩旧案了。 | I shall be sure to pay her a visit upon her release. If. After serving her sentence. She remains the same inveterately murderous Romano she once was. Then I shall have to expose her attempted murder of me. |
 | 7:47 | 佩施塔 | 不管怎么说，她朝我开了一枪。就算布兰奇改过自新，我也不会和她有更多来往。 | Either way. She took the shot. Even if she has righted her ways. I Shan't have any more to do with her. |

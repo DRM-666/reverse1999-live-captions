@@ -115,8 +115,9 @@ class OverlayController(
         }
         headerView = header
 
+        val s = uiStrings()
         statusText = TextView(context).apply {
-            text = "Idle"
+            text = s["Idle"]
             setTextColor(Color.WHITE)
             textSize = 10f
             maxLines = 1
@@ -124,10 +125,10 @@ class OverlayController(
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
         }
 
-        pauseButton = makeButton(android.R.drawable.ic_media_pause, uiStrings()["Pause captioning"]) { onPauseResume() }
-        lockButton = makeButton(android.R.drawable.ic_lock_lock, "锁定触摸穿透") { onToggleTouchThrough() }
-        minButton = makeButton(android.R.drawable.arrow_down_float, uiStrings()["Minimize overlay"]) { onToggleMinimize() }
-        closeButton = makeButton(android.R.drawable.ic_menu_close_clear_cancel, uiStrings()["Close overlay"]) { onClose() }
+        pauseButton = makeButton(android.R.drawable.ic_media_pause, s["Pause captioning"]) { onPauseResume() }
+        lockButton = makeButton(android.R.drawable.ic_lock_lock, s.pick("锁定触摸穿透", "Lock touch-through")) { onToggleTouchThrough() }
+        minButton = makeButton(android.R.drawable.arrow_down_float, s["Minimize overlay"]) { onToggleMinimize() }
+        closeButton = makeButton(android.R.drawable.ic_menu_close_clear_cancel, s["Close overlay"]) { onClose() }
 
         header.addView(statusText)
         header.addView(pauseButton)

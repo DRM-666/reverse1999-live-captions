@@ -37,7 +37,6 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Memory
-import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.ui.graphics.Color
@@ -45,6 +44,8 @@ import androidx.compose.ui.text.font.FontFamily
 import com.charles.livecaptionn.compatibility.CompatibilityTier
 import com.charles.livecaptionn.compatibility.DeviceSpecs
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Mic
@@ -101,9 +102,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.charles.livecaptionn.ads.AdUnits
-import com.charles.livecaptionn.billing.PremiumProduct
-import com.charles.livecaptionn.ads.NativeAdCard
 import com.charles.livecaptionn.settings.AudioSource
 import com.charles.livecaptionn.settings.Language
 import com.charles.livecaptionn.settings.SttBackend
@@ -111,22 +109,16 @@ import com.charles.livecaptionn.settings.TranslationBackend
 import com.charles.livecaptionn.speech.RecognitionStatus
 import com.charles.livecaptionn.speech.ModelQuality
 import com.charles.livecaptionn.speech.VoskModelInfo
+import com.charles.livecaptionn.speech.WhisperSmallStatus
+import com.charles.livecaptionn.speech.WhisperVariant
 import com.charles.livecaptionn.translation.MlKitLanguages
-import com.charles.livecaptionn.ui.feedback.FeedbackViewModel
-import com.charles.livecaptionn.ui.feedback.IssueDetailsDialog
-import com.charles.livecaptionn.ui.feedback.ReportProblemDialog
-import com.charles.livecaptionn.ui.feedback.SubmitSuccessSnackbar
-import com.charles.livecaptionn.ui.feedback.SupportAndFeedbackCard
 import com.charles.livecaptionn.overlay.OverlayFontCatalog
 import com.charles.livecaptionn.overlay.OverlayThemeCatalog
 import com.charles.livecaptionn.ui.l10n.LocalUiStrings
 import com.charles.livecaptionn.ui.l10n.UiLanguagePickerDialog
 import com.charles.livecaptionn.ui.l10n.UiLocalizationRepository.UiLocalizationStage
-import com.charles.livecaptionn.ui.premium.PremiumCard
 import com.charles.livecaptionn.ui.premium.PremiumUiState
-import com.charles.livecaptionn.ui.premium.PremiumViewModel
 import com.charles.livecaptionn.update.UpdateInfo
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,27 +138,13 @@ fun MainScreen(
     var translateUrlDraft by remember(ui.settings.serverBaseUrl) { mutableStateOf(ui.settings.serverBaseUrl) }
     var sttUrlDraft by remember(ui.settings.sttBaseUrl) { mutableStateOf(ui.settings.sttBaseUrl) }
     var showVoskSheet by remember { mutableStateOf(false) }
-    var showUpgradePrompt by remember { mutableStateOf(false) }
+    var showAdvancedSettings by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { viewModel.refreshPermissionState() }
 
-    val feedbackCtx = LocalContext.current
-    val feedbackApp = feedbackCtx.applicationContext as com.charles.livecaptionn.LiveCaptionApp
-    val feedbackVm: FeedbackViewModel = viewModel(
-        factory = FeedbackViewModel.Factory(feedbackCtx, feedbackApp.container.bugReportRepo)
-    )
-    val feedbackState by feedbackVm.state.collectAsStateWithLifecycle()
-
-    val premiumVm: PremiumViewModel = viewModel(
-        factory = PremiumViewModel.Factory(feedbackApp.container.premiumRepository)
-    )
-    val premiumState by premiumVm.state.collectAsStateWithLifecycle()
-    val activity = feedbackCtx as? android.app.Activity
-
-    LaunchedEffect(pendingCheckoutSessionId) {
-        if (pendingCheckoutSessionId != null) {
-            premiumVm.refresh(pendingCheckoutSessionId)
-            onCheckoutSessionConsumed()
-        }
+    val appContext = LocalContext.current
+    val liveApp = appContext.applicationContext as com.charles.livecaptionn.LiveCaptionApp
+    val whisperZipPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) viewModel.importWhisperModelZip(uri)
     }
 
     // Re-check permission state on every resume so granting overlay/mic
@@ -195,8 +173,8 @@ fun MainScreen(
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.Translate, contentDescription = null, modifier = Modifier.size(28.dp))
-                        Spacer(Modifier.width(10.dp))
+                        Icon(Icons.Filled.Translate, contentDescription = null, modifier = Modifier.size(26.dp))
+                        Spacer(Modifier.width(8.dp))
                         Text(t["Live CaptionN"], fontWeight = FontWeight.Bold)
                         Spacer(Modifier.width(6.dp))
                         Text(
@@ -207,8 +185,17 @@ fun MainScreen(
                     }
                 },
                 actions = {
+                    TextButton(
+                        onClick = { viewModel.updateUiLanguage(if (t.isZh) "en" else "zh") }
+                    ) {
+                        Text(
+                            text = if (t.isZh) "EN" else "中",
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
                     IconButton(onClick = { viewModel.openTutorial() }) {
-                        Icon(Icons.Filled.HelpOutline, contentDescription = "Tutorial & Guide")
+                        Icon(Icons.Filled.HelpOutline, contentDescription = t.pick("使用教程", "Tutorial & Guide"))
                     }
                     IconButton(onClick = onHistory) {
                         Icon(Icons.Filled.History, contentDescription = t["History"])
@@ -240,20 +227,11 @@ fun MainScreen(
             }
 
             val specs = ui.deviceSpecs
-            val setupContext = LocalContext.current
-            val openWebDoc: () -> Unit = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(REMOTE_SETUP_DOC_URL)).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                setupContext.startActivity(intent)
-            }
-
             if (specs != null) {
                 if (specs.tier == CompatibilityTier.UNSUPPORTED) {
                     UnsupportedDeviceBanner(
                         specs = specs,
-                        onWatchTutorial = { viewModel.openTutorial() },
-                        onOpenDoc = openWebDoc
+                        onWatchTutorial = { viewModel.openTutorial() }
                     )
                 } else if (specs.tier == CompatibilityTier.BORDERLINE && !ui.settings.borderlineWarningDismissed) {
                     BorderlineDeviceBanner(
@@ -265,7 +243,7 @@ fun MainScreen(
             }
 
             val modelReady = when (ui.settings.sttBackend) {
-                SttBackend.LOCAL_WHISPER -> true
+                SttBackend.LOCAL_WHISPER -> ui.whisperSmallStatus.isReady
                 SttBackend.LOCAL_VOSK -> ui.voskModels.any {
                     it.installed && it.languageCode.equals(ui.settings.sourceLanguageCode, ignoreCase = true)
                 }
@@ -273,97 +251,101 @@ fun MainScreen(
             }
             val permissionReady = ui.overlayPermissionGranted &&
                 (ui.settings.audioSource == AudioSource.SYSTEM || ui.micPermissionGranted)
-            // A Pro-only ML Kit language can stay selected after Pro lapses (or after a
-            // restore). Starting then used to fail inside the service with the reason
-            // hidden, so the Start button looked dead. Open the upgrade flow instead.
-            val startNeedsPro = com.charles.livecaptionn.translation.ProStartGate.requiresPro(
-                backend = ui.settings.translationBackend,
-                sourceLanguageCode = ui.settings.sourceLanguageCode,
-                targetLanguageCode = ui.settings.targetLanguageCode,
-                hasPro = premiumState.premium.hasPro
-            )
+
             CaptionControlCard(
-                ui,
-                onStart = { if (startNeedsPro) showUpgradePrompt = true else onStart() },
+                ui = ui,
+                onStart = onStart,
                 onStop = onStop,
                 canStart = modelReady && permissionReady,
                 modelMissing = !modelReady,
                 onDownloadModel = viewModel::downloadVoskModel,
-                onManageModels = { showVoskSheet = true }
+                onManageModels = { showVoskSheet = true },
+                onDownloadWhisperVariant = viewModel::downloadWhisperVariant,
+                onImportWhisperZip = { whisperZipPicker.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) }
             )
             PermissionsCard(ui, onRequestAudioPermission, onOpenOverlaySettings)
-            DeviceCompatibilityCard(
-                specs = ui.deviceSpecs,
-                onWatchTutorial = { viewModel.openTutorial() },
-                onSimulateTier = { viewModel.setSimulatedTier(it) }
+            AudioSourceCard(
+                ui = ui,
+                viewModel = viewModel,
+                onManageVoskModels = { showVoskSheet = true },
+                onImportWhisperZip = { whisperZipPicker.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) }
             )
-            AudioSourceCard(ui, viewModel, onManageModels = { showVoskSheet = true })
             StoryScriptCard(ui = ui, viewModel = viewModel)
-            DebugLogCard(debugLog = feedbackApp.container.debugLog, isRunning = ui.runtime.running, originalText = ui.runtime.originalText)
+            OverlaySettingsCard(ui = ui, viewModel = viewModel)
             LanguageCard(
                 ui = ui,
                 viewModel = viewModel,
-                onManageModels = { showVoskSheet = true },
-                hasPro = premiumState.premium.hasPro,
-                onRequiresPro = { showUpgradePrompt = true }
+                onManageModels = { showVoskSheet = true }
             )
-            OverlaySettingsCard(
-                ui = ui,
-                viewModel = viewModel,
-                hasPro = premiumState.premium.hasPro,
-                onRequiresPro = { showUpgradePrompt = true }
-            )
-            FeatureToolsCard(
-                settings = ui.settings,
-                hasPro = premiumState.premium.hasPro,
-                profiles = feedbackApp.container.captionProfiles,
-                glossary = feedbackApp.container.glossary,
-                micPermissionGranted = ui.micPermissionGranted,
-                overlayPermissionGranted = ui.overlayPermissionGranted,
-                voskModels = ui.voskModels,
-                onApplyProfile = viewModel::applyProfile,
-                onSaveHistoryChange = viewModel::updateSaveHistory,
-                onRequiresPro = { showUpgradePrompt = true }
-            )
-            UiLanguageCard(
-                languageCode = ui.uiLanguageCode,
-                busy = ui.uiLocalizationBusy,
-                error = ui.uiLocalizationError,
-                stage = ui.uiLocalizationStage,
-                translatedCount = ui.uiLocalizationTranslated,
-                translatedTotal = ui.uiLocalizationTotal,
-                onSelect = viewModel::updateUiLanguage
-            )
-            if (AdUnits.ENABLED && AdUnits.NATIVE.isNotBlank() && !premiumState.premium.hasAdFree) {
-                NativeAdCard()
-            }
-            ServerCard(
-                ui = ui,
-                translateUrl = translateUrlDraft,
-                onTranslateUrlChange = { translateUrlDraft = it },
-                onSaveTranslateUrl = { viewModel.updateBaseUrl(translateUrlDraft) },
-                onRefreshLibre = { viewModel.refreshLibreCatalog() },
-                onSelectTranslationBackend = viewModel::updateTranslationBackend,
-                sttUrl = sttUrlDraft,
-                onSttUrlChange = { sttUrlDraft = it },
-                onSaveSttUrl = { viewModel.updateSttUrl(sttUrlDraft) },
-                showStt = ui.settings.audioSource == AudioSource.SYSTEM &&
-                    ui.settings.sttBackend == SttBackend.REMOTE_WHISPER
+            DebugLogCard(
+                debugLog = liveApp.container.debugLog,
+                isRunning = ui.runtime.running,
+                originalText = ui.runtime.originalText
             )
 
-            SupportAndFeedbackCard(
-                state = feedbackState,
-                onReportProblem = { feedbackVm.showReportDialog() },
-                onOpenReport = { feedbackVm.openIssueDetails(it) }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (feedbackState.submitSuccess) {
-                SubmitSuccessSnackbar(
-                    message = t["Report submitted successfully!"],
-                    onDismiss = { feedbackVm.clearSubmitSuccess() }
-                )
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showAdvancedSettings = !showAdvancedSettings },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            SectionLabel(t.pick("高级设置（翻译后端 · 词表 · 界面语言 · 设备检测）", "Advanced (Translation · Glossary · UI Language · Device)"))
+                            Text(
+                                t.pick("默认配置已适配本地英文剧情字幕，一般无需调整", "Default settings work out of the box for offline English story captions"),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Icon(
+                            imageVector = if (showAdvancedSettings) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                            contentDescription = null
+                        )
+                    }
+                    if (showAdvancedSettings) {
+                        FeatureToolsCard(
+                            settings = ui.settings,
+                            hasPro = true,
+                            profiles = liveApp.container.captionProfiles,
+                            glossary = liveApp.container.glossary,
+                            micPermissionGranted = ui.micPermissionGranted,
+                            overlayPermissionGranted = ui.overlayPermissionGranted,
+                            voskModels = ui.voskModels,
+                            onApplyProfile = viewModel::applyProfile,
+                            onSaveHistoryChange = viewModel::updateSaveHistory,
+                            onRequiresPro = {}
+                        )
+                        UiLanguageCard(
+                            languageCode = ui.uiLanguageCode,
+                            busy = ui.uiLocalizationBusy,
+                            error = ui.uiLocalizationError,
+                            stage = ui.uiLocalizationStage,
+                            translatedCount = ui.uiLocalizationTranslated,
+                            translatedTotal = ui.uiLocalizationTotal,
+                            onSelect = viewModel::updateUiLanguage
+                        )
+                        ServerCard(
+                            ui = ui,
+                            translateUrl = translateUrlDraft,
+                            onTranslateUrlChange = { translateUrlDraft = it },
+                            onSaveTranslateUrl = { viewModel.updateBaseUrl(translateUrlDraft) },
+                            onRefreshLibre = { viewModel.refreshLibreCatalog() },
+                            onSelectTranslationBackend = viewModel::updateTranslationBackend,
+                            sttUrl = sttUrlDraft,
+                            onSttUrlChange = { sttUrlDraft = it },
+                            onSaveSttUrl = { viewModel.updateSttUrl(sttUrlDraft) },
+                            showStt = ui.settings.audioSource == AudioSource.SYSTEM &&
+                                ui.settings.sttBackend == SttBackend.REMOTE_WHISPER
+                        )
+                        DeviceCompatibilityCard(
+                            specs = ui.deviceSpecs,
+                            onWatchTutorial = { viewModel.openTutorial() }
+                        )
+                    }
+                }
             }
 
             Spacer(Modifier.height(8.dp))
@@ -374,16 +356,11 @@ fun MainScreen(
                 models = ui.voskModels,
                 progress = ui.voskDownloadProgress,
                 errors = ui.voskDownloadErrors,
-                hasPro = premiumState.premium.hasPro,
+                hasPro = true,
                 onDismiss = { showVoskSheet = false },
                 onDownload = viewModel::downloadVoskModel,
                 onDelete = viewModel::deleteVoskModel,
-                onRequiresPro = {
-                    // Used to just close the sheet, which left the user with no
-                    // way to reach the purchase (Play review, Oct 2026).
-                    showVoskSheet = false
-                    showUpgradePrompt = true
-                }
+                onRequiresPro = {}
             )
         }
 
@@ -395,48 +372,6 @@ fun MainScreen(
                     viewModel.dismissUnsupportedModal()
                     viewModel.openTutorial()
                 }
-            )
-        }
-
-        if (showUpgradePrompt) {
-            ProUpgradeDialog(
-                state = premiumState,
-                onGoPro = {
-                    val act = activity
-                    if (act != null) premiumVm.purchase(act, PremiumProduct.PRO_MONTHLY)
-                },
-                onDismiss = { showUpgradePrompt = false }
-            )
-            // Close the prompt once Pro is active so it does not linger after
-            // Google Play's purchase sheet returns.
-            LaunchedEffect(premiumState.premium.hasPro) {
-                if (premiumState.premium.hasPro) showUpgradePrompt = false
-            }
-        }
-
-        if (feedbackState.showReportDialog) {
-            ReportProblemDialog(
-                state = feedbackState,
-                onDismiss = { feedbackVm.hideReportDialog() },
-                onTitleChange = { feedbackVm.updateReportTitle(it) },
-                onDescriptionChange = { feedbackVm.updateReportDescription(it) },
-                onNameChange = { feedbackVm.updateReporterName(it) },
-                onEmailChange = { feedbackVm.updateReporterEmail(it) },
-                onIncludeDiagnosticsChange = { feedbackVm.updateIncludeDiagnostics(it) },
-                onAttachmentSelected = { feedbackVm.updateAttachmentUri(it) },
-                onClearAttachment = { feedbackVm.clearAttachment() },
-                onSubmit = { feedbackVm.submitReport() }
-            )
-        }
-
-        if (feedbackState.showIssueDetails) {
-            IssueDetailsDialog(
-                state = feedbackState,
-                onDismiss = { feedbackVm.closeIssueDetails() },
-                onReplyTextChange = { feedbackVm.updateReplyText(it) },
-                onReplyAttachmentSelected = { feedbackVm.updateReplyAttachmentUri(it) },
-                onClearReplyAttachment = { feedbackVm.clearReplyAttachment() },
-                onPostReply = { feedbackVm.postReply() }
             )
         }
     }
@@ -462,7 +397,9 @@ private fun CaptionControlCard(
     canStart: Boolean,
     modelMissing: Boolean = false,
     onDownloadModel: (VoskModelInfo) -> Unit = {},
-    onManageModels: () -> Unit = {}
+    onManageModels: () -> Unit = {},
+    onDownloadWhisperVariant: (WhisperVariant) -> Unit = {},
+    onImportWhisperZip: () -> Unit = {}
 ) {
     val isRunning = ui.runtime.running
     val t = LocalUiStrings.current
@@ -486,12 +423,16 @@ private fun CaptionControlCard(
             ) {
                 Column(Modifier.weight(1f)) {
                     Text(
-                        text = "字幕服务总开关",
+                        text = t.pick("字幕服务总开关", "Caption Service"),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = if (isRunning) "运行中 · 正在监听音频" else "已关闭 · 模型内存与服务已彻底释放",
+                        text = if (isRunning) {
+                            t.pick("运行中 · 正在监听音频", "Running · Listening to audio")
+                        } else {
+                            t.pick("已关闭 · 模型内存与服务已彻底释放", "Stopped · Model memory released")
+                        },
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -592,10 +533,120 @@ private fun CaptionControlCard(
                 )
             }
             if (!isRunning && modelMissing) {
-                // A fresh install ships no speech model, so Start used to sit
-                // disabled with nothing to tap. Offer the download right here.
-                MissingModelPrompt(ui, onDownloadModel, onManageModels)
+                if (ui.settings.sttBackend == SttBackend.LOCAL_WHISPER) {
+                    WhisperSetupSection(
+                        status = ui.whisperSmallStatus,
+                        onDownloadVariant = onDownloadWhisperVariant,
+                        onSelectVariant = {},
+                        onDeleteVariant = {},
+                        onImportZip = onImportWhisperZip,
+                        compact = true
+                    )
+                } else {
+                    MissingModelPrompt(ui, onDownloadModel, onManageModels)
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun WhisperSetupSection(
+    status: WhisperSmallStatus,
+    onDownloadVariant: (WhisperVariant) -> Unit,
+    onSelectVariant: (WhisperVariant) -> Unit,
+    onDeleteVariant: (WhisperVariant) -> Unit,
+    onImportZip: () -> Unit,
+    compact: Boolean = false
+) {
+    val t = LocalUiStrings.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        if (!status.isReady) {
+            Text(
+                text = t.pick(
+                    "当前为轻装版，尚未安装离线 Whisper 模型（下载后保存在私有目录，后续升级 APK 无需重传）：",
+                    "Lite build needs an offline Whisper model once (kept in private storage across APK updates):"
+                ),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        if (status.downloading) {
+            LinearProgressIndicator(progress = { status.progress }, modifier = Modifier.fillMaxWidth())
+            Text(
+                text = status.statusMessage ?: t.pick("正在准备模型…", "Preparing model…"),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        } else {
+            WhisperVariant.entries.forEach { variant ->
+                val installedOnDisk = variant in status.installedVariants
+                val isActive = status.activeVariant == variant && (installedOnDisk || (variant == WhisperVariant.SMALL_EN && status.bundledSmall))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = buildString {
+                                append(variant.displayName)
+                                if (isActive) append(t.pick(" · 当前启用", " · Active"))
+                                else if (installedOnDisk) append(t.pick(" · 已下载", " · Installed"))
+                                else if (variant == WhisperVariant.SMALL_EN && status.bundledSmall) append(t.pick(" · 内置", " · Bundled"))
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal
+                        )
+                        if (!compact || variant == WhisperVariant.SMALL_EN) {
+                            Text(
+                                text = variant.tierNote,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        if (installedOnDisk && !isActive) {
+                            TextButton(onClick = { onSelectVariant(variant) }) {
+                                Text(t.pick("启用", "Use"))
+                            }
+                        }
+                        if (installedOnDisk) {
+                            IconButton(onClick = { onDeleteVariant(variant) }) {
+                                Icon(Icons.Filled.Delete, contentDescription = t["Delete"], modifier = Modifier.size(18.dp))
+                            }
+                        } else if (!(variant == WhisperVariant.SMALL_EN && status.bundledSmall)) {
+                            FilledTonalButton(
+                                onClick = { onDownloadVariant(variant) },
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text(t.pick("下载", "Get"), fontSize = 12.sp)
+                            }
+                        }
+                    }
+                }
+            }
+            OutlinedButton(
+                onClick = onImportZip,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Filled.Download, contentDescription = null, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(t.pick("从本地 .zip 导入模型（免联网）", "Import model .zip from storage"))
+            }
+        }
+        status.statusMessage?.takeIf { !status.downloading }?.let { msg ->
+            Text(msg, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+        }
+        status.error?.let { err ->
+            Text(err, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
         }
     }
 }
@@ -711,9 +762,11 @@ private fun PermissionRow(label: String, granted: Boolean, onGrant: () -> Unit) 
 private fun AudioSourceCard(
     ui: MainUiState,
     viewModel: MainViewModel,
-    onManageModels: () -> Unit
+    onManageVoskModels: () -> Unit,
+    onImportWhisperZip: () -> Unit
 ) {
     val t = LocalUiStrings.current
+    var showWhisperManager by remember { mutableStateOf(false) }
     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             SectionLabel(t["Audio Source"])
@@ -768,7 +821,7 @@ private fun AudioSourceCard(
                     modifier = Modifier.weight(1f)
                 )
                 ChoiceChip(
-                    label = if (isSystem) "远程" else "系统自带",
+                    label = if (isSystem) t.pick("远程", "Remote") else t.pick("系统自带", "Built-in"),
                     icon = Icons.Filled.Cloud,
                     selected = ui.settings.sttBackend == SttBackend.REMOTE_WHISPER,
                     onClick = { viewModel.updateSttBackend(SttBackend.REMOTE_WHISPER) },
@@ -776,11 +829,40 @@ private fun AudioSourceCard(
                 )
             }
             if (ui.settings.sttBackend == SttBackend.LOCAL_WHISPER) {
-                Text(
-                    text = "当前引擎：Whisper Small (int8 · 已内置进阶版)，离线免费，支持《1999》多国口音与背景音过滤。",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                val active = ui.whisperSmallStatus.activeVariant
+                val statusLabel = when {
+                    active != null && active in ui.whisperSmallStatus.installedVariants ->
+                        t.pick("${active.displayName}（外置已安装）", "${active.displayName} (external)")
+                    ui.whisperSmallStatus.bundledSmall ->
+                        t.pick("Whisper Small (int8 · 内置)", "Whisper Small (int8 · bundled)")
+                    else ->
+                        t.pick("尚未安装模型（支持镜像下载 Small/Base/Tiny 或本地导入 .zip）", "No Whisper model installed yet")
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = t.pick("当前引擎：$statusLabel", "Active: $statusLabel"),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (ui.whisperSmallStatus.isReady) MaterialTheme.colorScheme.onSurfaceVariant
+                        else MaterialTheme.colorScheme.error,
+                        modifier = Modifier.weight(1f)
+                    )
+                    TextButton(onClick = { showWhisperManager = !showWhisperManager }) {
+                        Text(if (showWhisperManager) t.pick("收起", "Hide") else t.pick("模型管理", "Models"))
+                    }
+                }
+                if (showWhisperManager) {
+                    WhisperSetupSection(
+                        status = ui.whisperSmallStatus,
+                        onDownloadVariant = viewModel::downloadWhisperVariant,
+                        onSelectVariant = viewModel::selectWhisperVariant,
+                        onDeleteVariant = viewModel::deleteWhisperVariant,
+                        onImportZip = onImportWhisperZip
+                    )
+                }
             } else if (ui.settings.sttBackend == SttBackend.LOCAL_VOSK) {
                 val installed = ui.voskModels.count { it.installed }
                 val anyLargeInstalled = ui.voskModels.any { it.installed && it.quality == ModelQuality.LARGE }
@@ -799,7 +881,7 @@ private fun AudioSourceCard(
                     )
                 }
                 OutlinedButton(
-                    onClick = onManageModels,
+                    onClick = onManageVoskModels,
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Icon(Icons.Filled.Download, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -855,17 +937,11 @@ private fun ChoiceChip(
 private fun LanguageCard(
     ui: MainUiState,
     viewModel: MainViewModel,
-    onManageModels: () -> Unit,
-    hasPro: Boolean,
-    onRequiresPro: () -> Unit
+    onManageModels: () -> Unit
 ) {
     val sourceOptions = ui.availableSourceLanguages
     val targetOptions = ui.availableTargetLanguages
-    val usingMlKitGate = ui.settings.translationBackend == TranslationBackend.ML_KIT
     val t = LocalUiStrings.current
-    val languageRequiresPro: (Language) -> Boolean = { lang ->
-        usingMlKitGate && !hasPro && MlKitLanguages.requiresPro(lang.code)
-    }
 
     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -877,9 +953,7 @@ private fun LanguageCard(
                 selectedCode = ui.settings.sourceLanguageCode,
                 options = sourceOptions,
                 placeholder = if (sourceOptions.isEmpty()) t["No languages available"] else t["Pick a language"],
-                onPick = { viewModel.updateSource(it.code) },
-                requiresPro = languageRequiresPro,
-                onRequiresPro = onRequiresPro
+                onPick = { viewModel.updateSource(it.code) }
             )
 
             // Swap + target
@@ -899,9 +973,7 @@ private fun LanguageCard(
                 selectedCode = ui.settings.targetLanguageCode,
                 options = targetOptions,
                 placeholder = if (targetOptions.isEmpty()) t["No languages available"] else t["Pick a language"],
-                onPick = { viewModel.updateTarget(it.code) },
-                requiresPro = languageRequiresPro,
-                onRequiresPro = onRequiresPro
+                onPick = { viewModel.updateTarget(it.code) }
             )
 
             // Context-specific helper text
@@ -1372,9 +1444,7 @@ private fun formatModelSize(sizeMb: Int): String {
 @Composable
 private fun OverlaySettingsCard(
     ui: MainUiState,
-    viewModel: MainViewModel,
-    hasPro: Boolean,
-    onRequiresPro: () -> Unit
+    viewModel: MainViewModel
 ) {
     val t = LocalUiStrings.current
     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
@@ -1401,8 +1471,12 @@ private fun OverlaySettingsCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("电影/游戏字幕条模式", style = MaterialTheme.typography.bodyMedium)
-                    Text("隐藏顶部按钮栏、居中带黑影字幕、仅显示最近几行", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(t.pick("电影/游戏字幕条模式", "Cinema / Game Subtitle Bar Mode"), style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        t.pick("隐藏顶部按钮栏、居中带黑影字幕、仅显示最近几行", "Hides top bar, centers shadowed subtitles cleanly"),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
                 Switch(
                     checked = ui.settings.overlaySubtitleMode,
@@ -1411,7 +1485,10 @@ private fun OverlaySettingsCard(
             }
 
             if (ui.settings.overlaySubtitleMode) {
-                Text("字幕显示行数：${ui.settings.overlayMaxLines} 行", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    t.pick("字幕显示行数：${ui.settings.overlayMaxLines} 行", "Max subtitle lines: ${ui.settings.overlayMaxLines}"),
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Slider(
                     value = ui.settings.overlayMaxLines.toFloat(),
                     valueRange = 1f..6f,
@@ -1426,8 +1503,12 @@ private fun OverlaySettingsCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("锁定防误触（触摸穿透）", style = MaterialTheme.typography.bodyMedium)
-                    Text("开启后点击字幕区将直接透传给游戏；可在通知栏解锁", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(t.pick("锁定防误触（触摸穿透）", "Lock Touch-Through"), style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        t.pick("开启后点击字幕区将直接透传给游戏；可在通知栏解锁", "Taps pass straight through to games; unlock from notification"),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
                 Switch(
                     checked = ui.settings.overlayTouchThrough,
@@ -1455,12 +1536,11 @@ private fun OverlaySettingsCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OverlayThemeCatalog.THEMES.forEach { theme ->
-                    val locked = !hasPro && theme.id != OverlayThemeCatalog.FREE_THEME_ID
                     ChoiceChip(
                         label = theme.label,
-                        icon = if (locked) Icons.Filled.Lock else Icons.Filled.Palette,
+                        icon = Icons.Filled.Palette,
                         selected = ui.settings.overlayThemeId == theme.id,
-                        onClick = { if (locked) onRequiresPro() else viewModel.updateOverlayTheme(theme.id) }
+                        onClick = { viewModel.updateOverlayTheme(theme.id) }
                     )
                 }
             }
@@ -1473,12 +1553,11 @@ private fun OverlaySettingsCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OverlayFontCatalog.FONTS.forEach { font ->
-                    val locked = !hasPro && font.id != OverlayFontCatalog.FREE_FONT_ID
                     ChoiceChip(
                         label = font.label,
-                        icon = if (locked) Icons.Filled.Lock else Icons.Filled.TextFields,
+                        icon = Icons.Filled.TextFields,
                         selected = ui.settings.overlayFontId == font.id,
-                        onClick = { if (locked) onRequiresPro() else viewModel.updateOverlayFont(font.id) }
+                        onClick = { viewModel.updateOverlayFont(font.id) }
                     )
                 }
             }
@@ -1707,15 +1786,37 @@ private fun UiLanguageCard(
     val t = LocalUiStrings.current
     var showPicker by remember { mutableStateOf(false) }
     val selected = MlKitLanguages.LIST.firstOrNull { it.code.equals(languageCode, ignoreCase = true) }
-    val label = if (languageCode.equals("en", true)) {
-        "${t["English"]} (en)"
-    } else {
-        "${selected?.name.orEmpty()} ($languageCode)"
+    val label = when {
+        languageCode.equals("en", true) -> "${t["English"]} (en)"
+        languageCode.lowercase().startsWith("zh") -> "简体中文 (zh)"
+        else -> "${selected?.name.orEmpty()} ($languageCode)"
     }
 
     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             SectionLabel(t["Interface language"])
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = { onSelect("zh") },
+                    enabled = !busy && !languageCode.lowercase().startsWith("zh"),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("简体中文")
+                }
+                OutlinedButton(
+                    onClick = { onSelect("en") },
+                    enabled = !busy && !languageCode.equals("en", true),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("English")
+                }
+            }
 
             Row(
                 modifier = Modifier
@@ -1760,13 +1861,6 @@ private fun UiLanguageCard(
                 )
                 TextButton(onClick = { onSelect(languageCode) }) { Text(t["Retry"]) }
             }
-            if (!busy && error == null && !languageCode.equals("en", true)) {
-                Text(
-                    text = t["On-device ML Kit translation may be inaccurate."],
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
         }
     }
 
@@ -1792,9 +1886,9 @@ private fun UiLanguageCard(
 @Composable
 private fun UnsupportedDeviceBanner(
     specs: DeviceSpecs,
-    onWatchTutorial: () -> Unit,
-    onOpenDoc: () -> Unit
+    onWatchTutorial: () -> Unit
 ) {
+    val t = LocalUiStrings.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -1810,42 +1904,34 @@ private fun UnsupportedDeviceBanner(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "Unsupported for On-Device AI",
+                    text = t.pick("设备性能不足以运行本地模型", "Unsupported for On-Device AI"),
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFB71C1C),
                     style = MaterialTheme.typography.titleSmall
                 )
             }
             Text(
-                text = "This device does not meet the minimum hardware requirements (2.5 GB RAM, 4 CPU cores) for on-device Vosk & ML Kit processing. To prevent crashes, the app has automatically enabled Remote Whisper and LibreTranslate.",
+                text = t.pick(
+                    "运行本地离线模型需至少 2.5 GB 内存及 4 核处理器。为避免闪退，已自动切换为远程识别模式。",
+                    "This device does not meet the minimum requirements (2.5 GB RAM, 4 cores) for on-device models, so Remote Whisper is selected."
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = Color(0xFF37474F)
             )
             Text(
-                text = "Detected: ${specs.totalRamMb} MB RAM • ${specs.cpuCores} cores • ${if (specs.is64Bit) "64-bit" else "32-bit"} • ${specs.freeStorageMb} MB free",
+                text = "RAM ${specs.totalRamMb} MB · ${specs.cpuCores} Cores · ${if (specs.is64Bit) "64-bit" else "32-bit"} · ${specs.freeStorageMb} MB free",
                 style = MaterialTheme.typography.labelSmall,
                 color = Color(0xFF546E7A)
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(
-                    onClick = onWatchTutorial,
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC62828)),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("Watch Tutorial", fontSize = 12.sp)
-                }
-                OutlinedButton(
-                    onClick = onOpenDoc,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Filled.OpenInBrowser, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("Setup Guide", fontSize = 12.sp)
-                }
+            Button(
+                onClick = onWatchTutorial,
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC62828)),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(4.dp))
+                Text(t.pick("查看使用指南", "View Guide"), fontSize = 12.sp)
             }
         }
     }
@@ -1857,6 +1943,7 @@ private fun BorderlineDeviceBanner(
     onProceedAnyway: () -> Unit,
     onWatchTutorial: () -> Unit
 ) {
+    val t = LocalUiStrings.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -1872,14 +1959,17 @@ private fun BorderlineDeviceBanner(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "Notice: Limited Hardware Resources",
+                    text = t.pick("硬件资源偏紧张提示", "Limited Hardware Resources"),
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFE65100),
                     style = MaterialTheme.typography.titleSmall
                 )
             }
             Text(
-                text = "Your device (${specs.deviceModel}) meets the minimum requirements, but has limited resources (${specs.totalRamMb} MB RAM, ${specs.cpuCores} cores, ${if (specs.is64Bit) "64-bit" else "32-bit"}). On-device models may experience latency or memory pressure. For best performance, remote Whisper is recommended.",
+                text = t.pick(
+                    "当前设备 (${specs.deviceModel}，${specs.totalRamMb} MB 内存) 可运行本地识别，但在大型游戏中建议使用更轻量的 Base / Tiny 模型以保证流畅。",
+                    "Your device (${specs.deviceModel}, ${specs.totalRamMb} MB RAM) may experience higher latency with heavy models; Base/Tiny Whisper is recommended."
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = Color(0xFF3E2723)
             )
@@ -1890,7 +1980,7 @@ private fun BorderlineDeviceBanner(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE65100)),
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Proceed Anyway", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text(t.pick("我知道了", "Dismiss"), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
                 OutlinedButton(
                     onClick = onWatchTutorial,
@@ -1899,7 +1989,7 @@ private fun BorderlineDeviceBanner(
                 ) {
                     Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Setup Guide", fontSize = 12.sp)
+                    Text(t.pick("使用指南", "Guide"), fontSize = 12.sp)
                 }
             }
         }
@@ -1912,39 +2002,40 @@ private fun UnsupportedDeviceDialog(
     onDismiss: () -> Unit,
     onWatchTutorial: () -> Unit
 ) {
+    val t = LocalUiStrings.current
     AlertDialog(
         onDismissRequest = onDismiss,
         icon = {
             Icon(Icons.Filled.Error, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(32.dp))
         },
         title = {
-            Text("Hardware Requirements Not Met", fontWeight = FontWeight.Bold)
+            Text(t.pick("设备硬件不满足本地运行要求", "Hardware Requirements Not Met"), fontWeight = FontWeight.Bold)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "On-device neural speech recognition and translation require at least 2.5 GB RAM and 4 CPU cores to run reliably."
+                    t.pick(
+                        "本地神经网络语音识别需要至少 2.5 GB 内存和 4 核处理器。",
+                        "On-device neural speech recognition requires at least 2.5 GB RAM and 4 CPU cores."
+                    )
                 )
                 if (specs != null) {
                     Text(
-                        "Device specs:\n• RAM: ${specs.totalRamMb} MB (min 2560 MB)\n• CPU: ${specs.cpuCores} cores (min 4)\n• Architecture: ${if (specs.is64Bit) "64-bit" else "32-bit"}\n• Free storage: ${specs.freeStorageMb} MB",
+                        "RAM ${specs.totalRamMb} MB · ${specs.cpuCores} Cores · ${if (specs.is64Bit) "64-bit" else "32-bit"} · ${specs.freeStorageMb} MB free",
                         style = MaterialTheme.typography.bodySmall,
                         fontFamily = FontFamily.Monospace
                     )
                 }
-                Text(
-                    "On-device models are locked. Remote Whisper STT and LibreTranslate have been selected automatically so you can use live captions seamlessly."
-                )
             }
         },
         confirmButton = {
             Button(onClick = onWatchTutorial) {
-                Text("Watch Tutorial")
+                Text(t.pick("查看使用指南", "View Guide"))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Understood")
+                Text(t.pick("知道了", "OK"))
             }
         }
     )
@@ -1953,20 +2044,24 @@ private fun UnsupportedDeviceDialog(
 @Composable
 private fun DeviceCompatibilityCard(
     specs: DeviceSpecs?,
-    onWatchTutorial: () -> Unit,
-    onSimulateTier: (CompatibilityTier?) -> Unit
+    onWatchTutorial: () -> Unit
 ) {
     if (specs == null) return
-    var showSimMenu by remember { mutableStateOf(false) }
+    val t = LocalUiStrings.current
+    val tierText = when (specs.tier) {
+        CompatibilityTier.PASSED -> t.pick("完全支持", "Supported")
+        CompatibilityTier.BORDERLINE -> t.pick("勉强支持", "Borderline")
+        CompatibilityTier.UNSUPPORTED -> t.pick("不建议本地运行", "Unsupported")
+    }
 
     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SectionLabel("System Compatibility Check")
+                SectionLabel(t.pick("设备性能检测", "Device Compatibility"))
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
@@ -1980,7 +2075,7 @@ private fun DeviceCompatibilityCard(
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = specs.tier.label,
+                        text = tierText,
                         color = Color.White,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold
@@ -1995,59 +2090,18 @@ private fun DeviceCompatibilityCard(
             )
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("• RAM: ${specs.totalRamMb} MB (min 2.5 GB, 4 GB+ recommended)", style = MaterialTheme.typography.bodySmall)
-                Text("• CPU: ${specs.cpuCores} cores (${if (specs.is64Bit) "64-bit" else "32-bit"})", style = MaterialTheme.typography.bodySmall)
-                Text("• Free Storage: ${specs.freeStorageMb} MB", style = MaterialTheme.typography.bodySmall)
+                Text("• RAM: ${specs.totalRamMb} MB · CPU: ${specs.cpuCores} Cores (${if (specs.is64Bit) "64-bit" else "32-bit"})", style = MaterialTheme.typography.bodySmall)
+                Text("• " + t.pick("可用存储: ${specs.freeStorageMb} MB", "Free Storage: ${specs.freeStorageMb} MB"), style = MaterialTheme.typography.bodySmall)
             }
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilledTonalButton(
-                    onClick = onWatchTutorial,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("Tutorial & Guide", fontSize = 12.sp)
-                }
-                OutlinedButton(
-                    onClick = { showSimMenu = true },
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text("Test Tier...", fontSize = 12.sp)
-                }
-            }
-
-            if (showSimMenu) {
-                AlertDialog(
-                    onDismissRequest = { showSimMenu = false },
-                    title = { Text("Simulate Compatibility Tier") },
-                    text = {
-                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text("Select a tier to test app behavior and UI adaptation on this device:")
-                            OutlinedButton(
-                                onClick = { onSimulateTier(CompatibilityTier.PASSED); showSimMenu = false },
-                                modifier = Modifier.fillMaxWidth()
-                            ) { Text("Passed (>= 4 GB RAM, 64-bit)") }
-                            OutlinedButton(
-                                onClick = { onSimulateTier(CompatibilityTier.BORDERLINE); showSimMenu = false },
-                                modifier = Modifier.fillMaxWidth()
-                            ) { Text("Borderline (3 GB RAM / 32-bit / 4 cores)") }
-                            OutlinedButton(
-                                onClick = { onSimulateTier(CompatibilityTier.UNSUPPORTED); showSimMenu = false },
-                                modifier = Modifier.fillMaxWidth()
-                            ) { Text("Unsupported (< 2.5 GB RAM / < 4 cores)") }
-                            TextButton(
-                                onClick = { onSimulateTier(null); showSimMenu = false },
-                                modifier = Modifier.fillMaxWidth()
-                            ) { Text("Reset to Real Hardware") }
-                        }
-                    },
-                    confirmButton = {},
-                    dismissButton = {
-                        TextButton(onClick = { showSimMenu = false }) { Text("Cancel") }
-                    }
-                )
+            FilledTonalButton(
+                onClick = onWatchTutorial,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(4.dp))
+                Text(t.pick("查看使用教程", "Open User Guide"), fontSize = 12.sp)
             }
         }
     }
@@ -2061,6 +2115,7 @@ private fun DebugLogCard(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val t = LocalUiStrings.current
     var count by remember(isRunning, originalText) { mutableStateOf(debugLog.lineCount()) }
     var feedback by remember { mutableStateOf<String?>(null) }
 
@@ -2076,7 +2131,10 @@ private fun DebugLogCard(
                     } ?: error("无法写入文件")
                 }
                 kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
-                    feedback = ok.fold({ "日志已保存，共 $count 条" }, { "保存失败：${it.message}" })
+                    feedback = ok.fold(
+                        { t.pick("日志已保存，共 $count 条", "Saved $count log lines") },
+                        { t.pick("保存失败：${it.message}", "Save failed: ${it.message}") }
+                    )
                 }
             }
         }
@@ -2089,11 +2147,18 @@ private fun DebugLogCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                SectionLabel("调试日志与命中诊断")
-                Text("已记录 $count 条", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                SectionLabel(t.pick("调试日志与命中诊断", "Debug Log & Match Diagnostics"))
+                Text(
+                    t.pick("已记录 $count 条", "$count lines"),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
             Text(
-                "记录 Whisper 原始听写、台词匹配层级/分数及最近候选，便于排查未命中原因。",
+                t.pick(
+                    "记录 Whisper 原始听写、台词匹配层级/分数及最近候选，便于排查未命中原因。",
+                    "Logs raw Whisper outputs, match tiers/scores, and nearest script candidates."
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -2105,7 +2170,7 @@ private fun DebugLogCard(
                     },
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("导出 .txt")
+                    Text(t.pick("导出 .txt", "Export"))
                 }
                 OutlinedButton(
                     onClick = {
@@ -2113,11 +2178,11 @@ private fun DebugLogCard(
                         val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         cm.setPrimaryClip(ClipData.newPlainText("LiveCaption Debug Log", content.takeLast(120_000)))
                         count = debugLog.lineCount()
-                        feedback = "已复制最近日志到剪贴板"
+                        feedback = t.pick("已复制最近日志到剪贴板", "Copied recent log lines")
                     },
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("复制")
+                    Text(t["Copy"])
                 }
                 OutlinedButton(
                     onClick = {
@@ -2126,18 +2191,18 @@ private fun DebugLogCard(
                             type = "text/plain"
                             putExtra(Intent.EXTRA_TEXT, content.takeLast(80_000))
                         }
-                        context.startActivity(Intent.createChooser(share, "分享调试日志"))
+                        context.startActivity(Intent.createChooser(share, t.pick("分享调试日志", "Share Debug Log")))
                     },
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("分享")
+                    Text(t.pick("分享", "Share"))
                 }
                 TextButton(onClick = {
                     debugLog.clear()
                     count = 0
-                    feedback = "日志已清空"
+                    feedback = t.pick("日志已清空", "Log cleared")
                 }) {
-                    Text("清空")
+                    Text(t["Clear"])
                 }
             }
             feedback?.let {

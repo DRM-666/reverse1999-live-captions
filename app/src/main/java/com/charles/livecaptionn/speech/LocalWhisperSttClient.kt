@@ -1,7 +1,6 @@
 package com.charles.livecaptionn.speech
 
 import android.content.Context
-import android.content.res.AssetManager
 import android.util.Log
 import com.k2fsa.sherpa.onnx.FeatureConfig
 import com.k2fsa.sherpa.onnx.OfflineModelConfig
@@ -20,8 +19,9 @@ import java.io.File
 /**
  * Manages the on-device Sherpa-ONNX Whisper recognizer and Silero VAD.
  *
- * Loads lazily when a captioning session starts and releases all native
- * ONNX memory via [release] as soon as the user turns off the service switch.
+ * Prefers downloaded/imported external models in `filesDir/whisper/<variant>/` so
+ * lightweight APK updates keep existing models intact, and falls back to bundled
+ * `assets/models/whisper-small.en` when packaged in the full build.
  */
 class LocalWhisperSttClient(private val context: Context) {
 
@@ -32,9 +32,21 @@ class LocalWhisperSttClient(private val context: Context) {
 
     fun smallModelDir(): File = File(context.filesDir, "whisper/small.en")
 
-    fun isSmallModelInstalled(): Boolean = true
+    fun isSmallModelInstalled(): Boolean =
+        WhisperModelManager.hasAnyDiskModel(context) || WhisperModelManager.hasBundledSmallEn(context)
 
-    fun activeModelName(): String = "Whisper Small (int8 · 内置)"
+    fun activeModelName(): String {
+        val disk = WhisperModelManager.installedDiskVariants(context)
+        if (disk.isNotEmpty()) {
+            val active = WhisperModelManager.resolveActiveVariant(context) ?: disk.first()
+            return "${active.displayName} · 外置"
+        }
+        return if (WhisperModelManager.hasBundledSmallEn(context)) {
+            "Whisper Small (int8 · 内置)"
+        } else {
+            "未安装离线 Whisper 模型"
+        }
+    }
 
     suspend fun ensureLoaded(): Boolean = withContext(Dispatchers.IO) {
         mutex.withLock {
@@ -56,33 +68,69 @@ class LocalWhisperSttClient(private val context: Context) {
                 )
                 val loadedVad = Vad(context.assets, vadConfig)
 
-                val whisperConfig = OfflineWhisperModelConfig(
-                    encoder = "$WHISPER_SMALL_ASSET_DIR/small.en-encoder.int8.onnx",
-                    decoder = "$WHISPER_SMALL_ASSET_DIR/small.en-decoder.int8.onnx",
-                    language = "en",
-                    task = "transcribe",
-                    tailPaddings = -1
-                )
-                val tokensPath = "$WHISPER_SMALL_ASSET_DIR/small.en-tokens.txt"
+                val diskVariants = WhisperModelManager.installedDiskVariants(context)
+                val activeDisk = if (diskVariants.isNotEmpty()) {
+                    WhisperModelManager.resolveActiveVariant(context)?.takeIf { it in diskVariants } ?: diskVariants.first()
+                } else null
 
                 val threads = Runtime.getRuntime().availableProcessors().coerceIn(2, 4)
-                val modelConfig = OfflineModelConfig(
-                    whisper = whisperConfig,
-                    tokens = tokensPath,
-                    numThreads = threads,
-                    debug = false,
-                    provider = "cpu",
-                    modelType = "whisper"
-                )
-                val recConfig = OfflineRecognizerConfig(
-                    featConfig = FeatureConfig(
-                        sampleRate = AudioCaptureHelper.SAMPLE_RATE,
-                        featureDim = 80
-                    ),
-                    modelConfig = modelConfig,
-                    decodingMethod = "greedy_search"
-                )
-                val loadedRecognizer = OfflineRecognizer(context.assets, recConfig)
+                val loadedRecognizer = if (activeDisk != null) {
+                    val dir = WhisperModelManager.variantDir(context, activeDisk)
+                    val whisperConfig = OfflineWhisperModelConfig(
+                        encoder = File(dir, "${activeDisk.id}-encoder.int8.onnx").absolutePath,
+                        decoder = File(dir, "${activeDisk.id}-decoder.int8.onnx").absolutePath,
+                        language = "en",
+                        task = "transcribe",
+                        tailPaddings = -1
+                    )
+                    val recConfig = OfflineRecognizerConfig(
+                        featConfig = FeatureConfig(
+                            sampleRate = AudioCaptureHelper.SAMPLE_RATE,
+                            featureDim = 80
+                        ),
+                        modelConfig = OfflineModelConfig(
+                            whisper = whisperConfig,
+                            tokens = File(dir, "${activeDisk.id}-tokens.txt").absolutePath,
+                            numThreads = threads,
+                            debug = false,
+                            provider = "cpu",
+                            modelType = "whisper"
+                        ),
+                        decodingMethod = "greedy_search"
+                    )
+                    activeModelLabel = "${activeDisk.id} (disk)"
+                    OfflineRecognizer(null, recConfig)
+                } else if (WhisperModelManager.hasBundledSmallEn(context)) {
+                    val whisperConfig = OfflineWhisperModelConfig(
+                        encoder = "$WHISPER_SMALL_ASSET_DIR/small.en-encoder.int8.onnx",
+                        decoder = "$WHISPER_SMALL_ASSET_DIR/small.en-decoder.int8.onnx",
+                        language = "en",
+                        task = "transcribe",
+                        tailPaddings = -1
+                    )
+                    val recConfig = OfflineRecognizerConfig(
+                        featConfig = FeatureConfig(
+                            sampleRate = AudioCaptureHelper.SAMPLE_RATE,
+                            featureDim = 80
+                        ),
+                        modelConfig = OfflineModelConfig(
+                            whisper = whisperConfig,
+                            tokens = "$WHISPER_SMALL_ASSET_DIR/small.en-tokens.txt",
+                            numThreads = threads,
+                            debug = false,
+                            provider = "cpu",
+                            modelType = "whisper"
+                        ),
+                        decodingMethod = "greedy_search"
+                    )
+                    activeModelLabel = "whisper-small.en (asset)"
+                    OfflineRecognizer(context.assets, recConfig)
+                } else {
+                    loadedVad.release()
+                    Log.w(TAG, "No Whisper model installed on disk or bundled in assets")
+                    return@withLock false
+                }
+
                 vad = loadedVad
                 recognizer = loadedRecognizer
                 Log.i(TAG, "Loaded $activeModelLabel with $threads threads")

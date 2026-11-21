@@ -22,6 +22,7 @@ import com.charles.livecaptionn.settings.AudioSource
 import com.charles.livecaptionn.settings.SttBackend
 import com.charles.livecaptionn.settings.TranslationBackend
 import com.charles.livecaptionn.speech.VoskModelInfo
+import com.charles.livecaptionn.speech.WhisperVariant
 import com.charles.livecaptionn.data.CaptionProfile
 import com.charles.livecaptionn.update.UpdateInfo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -271,6 +272,31 @@ class MainViewModel(
 
     fun downloadWhisperSmall() {
         viewModelScope.launch { container.whisperModelManager.downloadSmallEn() }
+    }
+
+    fun downloadWhisperVariant(variant: WhisperVariant) {
+        viewModelScope.launch { container.whisperModelManager.downloadVariant(variant) }
+    }
+
+    fun importWhisperModelZip(uri: Uri) {
+        viewModelScope.launch {
+            container.localWhisperClient.release()
+            container.whisperModelManager.importFromZipUri(uri)
+        }
+    }
+
+    fun selectWhisperVariant(variant: WhisperVariant) {
+        viewModelScope.launch {
+            container.localWhisperClient.release()
+            container.whisperModelManager.selectVariant(variant)
+        }
+    }
+
+    fun deleteWhisperVariant(variant: WhisperVariant) {
+        viewModelScope.launch {
+            container.localWhisperClient.release()
+            container.whisperModelManager.deleteVariant(variant)
+        }
     }
 
     fun deleteWhisperSmall() {

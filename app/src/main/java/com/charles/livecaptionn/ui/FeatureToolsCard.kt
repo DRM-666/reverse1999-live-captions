@@ -98,18 +98,16 @@ fun FeatureToolsCard(
                     profileItems = profileItems.filterNot { it.name == profile.name } + profile
                 }) { Text(t["Save preset"]) }
                 OutlinedButton(onClick = {
-                    if (hasPro) {
-                        val profile = CaptionProfile(
-                            name = t["Pro setup"],
-                            sourceLanguage = settings.sourceLanguageCode,
-                            targetLanguage = settings.targetLanguageCode,
-                            textSizeSp = settings.textSizeSp,
-                            showOriginal = settings.showOriginal,
-                            proOnly = true
-                        )
-                        scope.launch { profiles.save(profile) }
-                        profileItems = profileItems.filterNot { it.name == profile.name } + profile
-                    } else onRequiresPro()
+                    val profile = CaptionProfile(
+                        name = t.pick("备用配置", "Alt setup"),
+                        sourceLanguage = settings.sourceLanguageCode,
+                        targetLanguage = settings.targetLanguageCode,
+                        textSizeSp = settings.textSizeSp,
+                        showOriginal = settings.showOriginal,
+                        proOnly = false
+                    )
+                    scope.launch { profiles.save(profile) }
+                    profileItems = profileItems.filterNot { it.name == profile.name } + profile
                 }) { Text(t["Save Pro preset"]) }
             }
             if (profileItems.isNotEmpty()) {
@@ -117,7 +115,7 @@ fun FeatureToolsCard(
                     items(profileItems, key = { it.id }) { profile ->
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Text(profile.name, Modifier.weight(1f))
-                            TextButton(onClick = { if (!profile.proOnly || hasPro) onApplyProfile(profile) else onRequiresPro() }) { Text(t["Use"]) }
+                            TextButton(onClick = { onApplyProfile(profile) }) { Text(t["Use"]) }
                             IconButton(onClick = {
                                 scope.launch { profiles.delete(profile.id) }
                                 profileItems = profileItems.filterNot { it.id == profile.id }
@@ -128,7 +126,7 @@ fun FeatureToolsCard(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(t["Glossary and phrase replacements"], Modifier.weight(1f))
-                TextButton(onClick = { if (hasPro) showGlossaryDialog = true else onRequiresPro() }) {
+                TextButton(onClick = { showGlossaryDialog = true }) {
                     Icon(Icons.Filled.Add, contentDescription = null)
                     Text(t["Add Pro"])
                 }

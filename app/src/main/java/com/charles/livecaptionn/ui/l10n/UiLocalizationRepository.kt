@@ -55,7 +55,13 @@ class UiLocalizationRepository(
         val isEnglish: Boolean get() = languageCode.equals("en", true)
     }
 
-    private val _state = MutableStateFlow(State())
+    private val _state = MutableStateFlow(
+        State(
+            languageCode = "zh",
+            strings = UiStringCatalog.ZH_CN_STRINGS,
+            fromCache = true
+        )
+    )
     val state: StateFlow<State> = _state.asStateFlow()
 
     /** Bumped on every select so a stale slow translation can't overwrite a newer one. */
@@ -63,14 +69,21 @@ class UiLocalizationRepository(
 
     /**
      * Called once at app startup to restore the persisted interface language.
-     * Renders instantly from cache; kicks off a background re-translation
-     * otherwise.
+     * Simplified Chinese ("zh") and English ("en") resolve instantaneously without downloads.
      */
     suspend fun restore() {
         val saved = settingsRepository.settingsFlow.first().uiLanguageCode.orEmpty()
-            .ifBlank { "en" }
+            .ifBlank { "zh" }
+        if (isBuiltinZh(saved)) {
+            _state.value = State(
+                languageCode = "zh",
+                strings = UiStringCatalog.ZH_CN_STRINGS,
+                fromCache = true
+            )
+            return
+        }
         if (saved.equals("en", true)) {
-            _state.value = State(languageCode = "en")
+            _state.value = State(languageCode = "en", fromCache = true)
             return
         }
         val cached = cache.read(saved)
@@ -89,7 +102,7 @@ class UiLocalizationRepository(
 
     /** Switches (and persists) the interface language. */
     fun select(languageCode: String) {
-        val lang = languageCode.orEmpty().ifBlank { "en" }
+        val lang = languageCode.orEmpty().ifBlank { "zh" }
         scope.launch {
             settingsRepository.update { it.copy(uiLanguageCode = lang) }
             selectInternal(lang)
@@ -99,11 +112,24 @@ class UiLocalizationRepository(
     /** Synchronous lookup for non-Compose consumers (overlay, notifications). */
     fun latestStrings(): UiStrings = _state.value.strings
 
+    private fun isBuiltinZh(code: String): Boolean {
+        val normalized = code.lowercase().replace('_', '-')
+        return normalized == "zh" || normalized.startsWith("zh-")
+    }
+
     private suspend fun selectInternal(languageCode: String) {
-        val lang = languageCode.ifBlank { "en" }
+        val lang = languageCode.ifBlank { "zh" }
         val gen = ++generation
+        if (isBuiltinZh(lang)) {
+            _state.value = State(
+                languageCode = "zh",
+                strings = UiStringCatalog.ZH_CN_STRINGS,
+                fromCache = true
+            )
+            return
+        }
         if (lang.equals("en", true)) {
-            _state.value = State(languageCode = "en")
+            _state.value = State(languageCode = "en", fromCache = true)
             return
         }
         // Cache hit → instant, no model download or translation work.

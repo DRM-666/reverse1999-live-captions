@@ -18,6 +18,7 @@ overlay_state.png
 
 # Vosk / Sherpa-ONNX model blobs and local AARs — fetched via scripts/download_deps.ps1
 /app/src/main/assets/models/
+/app/src/full/assets/models/
 /app/libs/*.aar
 
 # Google Services JSON — generated from CI secret GOOGLE_SERVICES_JSON_B64

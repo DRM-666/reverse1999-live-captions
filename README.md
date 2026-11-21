@@ -25,9 +25,14 @@
 
 ## 快速使用（手机端）
 
-1. 从本仓库 **Releases** 下载安装包 `story-english-captions.apk` 安装到 Android 手机（`arm64-v8a`，Android 9+）。
-2. （可选，强烈推荐）将仓库中 `story-notes/story_bilingual_reference.md` 传到手机，在 App 内「剧情台词库」卡片点击 **导入 MD/TXT** 并选择该文件（此时无需配置任何大模型 API Key，0 token 纯离线匹配）。
-3. 授予悬浮窗与屏幕/音频捕获权限，打开顶部 **「字幕服务总开关」**（建议选择 `System Audio` + `Whisper`），进入游戏剧情即可使用。
+**Release 提供两个版本：**
+- **轻装版 / 更新包 `story-english-captions-lite-v1.0.7.apk`（`~135 MiB`，推荐更新及省流量使用）**：只内置 VAD 检测模型，首次打开可在首页一键从国内镜像下载 Whisper 模型（支持 `Small` 推荐 / `Base` 轻量 / `Tiny` 极速），或直接导入本地 `.zip` 模型包；模型存于私有持久目录，后续更新 APK 无需重新下载大模型。
+- **完整开箱版 `story-english-captions.apk`（`~533 MiB`）**：内置完整 `whisper-small.en` 与 Vosk 小模型，装完免配置即刻开用。
+
+**使用步骤：**
+1. 下载安装对应版本的 APK（`arm64-v8a`，Android 9+）。
+2. （可选，强烈推荐）将仓库中 `story-notes/story_bilingual_reference.md` 传到手机，在 App 内「剧情台词库」卡片点击 **导入 MD/TXT** 并选择该文件（此时无需配置任何大模型 API Key，0 token 纯离线匹配）；也可直接使用 **UTTU 在线选章**。
+3. 授予悬浮窗与屏幕/音频捕获权限，打开顶部 **「字幕服务总开关」**（默认 `System Audio` + `Whisper`），进入游戏剧情即可使用。
 
 ---
 
@@ -38,10 +43,12 @@
 ```powershell
 # Windows PowerShell
 .\scripts\download_deps.ps1
-.\gradlew.bat :app:testGithubDebugUnitTest :app:assembleGithubDebug
+.\gradlew.bat :app:testGithubLiteDebugUnitTest :app:assembleGithubLiteDebug
+# 或编译内置大模型的完整包：
+.\gradlew.bat :app:assembleGithubFullDebug
 ```
 
-输出 APK 位于 `app/build/outputs/apk/github/debug/app-github-debug.apk`。
+输出 APK 分别位于 `app/build/outputs/apk/githubLite/debug/` 与 `app/build/outputs/apk/githubFull/debug/`。
 
 ---
 

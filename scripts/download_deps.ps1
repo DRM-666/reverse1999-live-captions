@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $libsDir = Join-Path $root "app\libs"
-$whisperDir = Join-Path $root "app\src\main\assets\models\whisper-small.en"
+$whisperDir = Join-Path $root "app\src\full\assets\models\whisper-small.en"
 $vadDir = Join-Path $root "app\src\main\assets\models\vad"
 
 New-Item -ItemType Directory -Force -Path $libsDir, $whisperDir, $vadDir | Out-Null
@@ -21,4 +21,4 @@ curl.exe --http1.1 -L --retry 3 "https://hf-mirror.com/csukuangfj/sherpa-onnx-wh
 Write-Host "5/5 Downloading small.en-decoder.int8.onnx..."
 curl.exe --http1.1 -L --retry 3 "https://hf-mirror.com/csukuangfj/sherpa-onnx-whisper-small.en/resolve/main/small.en-decoder.int8.onnx" -o (Join-Path $whisperDir "small.en-decoder.int8.onnx")
 
-Write-Host "Done! You can now run: .\gradlew.bat :app:assembleGithubDebug"
+Write-Host "Done! Run :app:assembleGithubLiteDebug (~135 MiB) or :app:assembleGithubFullDebug (~533 MiB)"
