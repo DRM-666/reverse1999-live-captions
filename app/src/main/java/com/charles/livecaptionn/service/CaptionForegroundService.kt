@@ -252,11 +252,16 @@ class CaptionForegroundService : Service() {
             }
 
             // Load once per session so file selection never interrupts a live recognizer.
+            val debugLog = app.container.debugLog
             val parsedDoc = withContext(Dispatchers.IO) {
-                runCatching { StoryScriptStore(applicationContext).loadParsed() }.getOrNull()
+                runCatching { StoryScriptStore(applicationContext).loadParsed() }.getOrElse {
+                    debugLog.log("Script", "loadParsed threw: ${it.message}")
+                    null
+                }
             }
             val uttuBundle = app.container.uttuStoryRepository.currentBundle()
             val persistChapter: (Int) -> Unit = { newChapter ->
+                debugLog.log("Chapter", "Auto-advanced activeStoryChapter -> $newChapter")
                 serviceScope.launch {
                     app.container.settingsRepository.update { it.copy(activeStoryChapter = newChapter) }
                 }
@@ -304,11 +309,39 @@ class CaptionForegroundService : Service() {
             }
             lastFinalEnglishLine = null
 
+            debugLog.log(
+                "Session",
+                "START audio=${settings.audioSource} stt=${settings.sttBackend} " +
+                    "src=${settings.sourceLanguageCode} tgt=${settings.targetLanguageCode} " +
+                    "startCh=${settings.activeStoryChapter} " +
+                    "parsedChapters=${parsedDoc?.chapters?.size ?: 0} parsedLines=${parsedDoc?.lines?.size ?: 0} " +
+                    "matcherLines=${storyMatcher?.indexedLineCount ?: 0} matcherActiveCh=${storyMatcher?.activeChapter ?: -1}"
+            )
+
             val useEnglishCaptions = settings.sourceLanguageCode == "en" && settings.targetLanguageCode == "en"
             val onSpeechResult = { result: SpeechResult ->
                 val spoken = result.text.trim()
-                val match = if (useEnglishCaptions && result.isFinal && spoken.isNotEmpty()) storyMatcher?.match(spoken) else null
+                val outcome = if (useEnglishCaptions && result.isFinal && spoken.isNotEmpty()) {
+                    storyMatcher?.matchDetailed(spoken)
+                } else {
+                    null
+                }
+                val match = outcome?.text
                 val transcript = match ?: spoken
+                if (result.isFinal && spoken.isNotEmpty()) {
+                    if (outcome != null) {
+                        val scoreStr = String.format(java.util.Locale.US, "%.2f", outcome.score)
+                        val bestStr = String.format(java.util.Locale.US, "%.2f", outcome.bestCandidateScore)
+                        debugLog.log(
+                            "Match",
+                            "${outcome.tier} score=$scoreStr ch=${storyMatcher?.activeChapter} cursor=${storyMatcher?.cursor} " +
+                                "raw='${spoken.take(70)}' -> match='${match?.take(70) ?: "NONE"}' " +
+                                "(best=$bestStr near='${outcome.bestCandidatePreview.take(55)}')"
+                        )
+                    } else {
+                        debugLog.log("Match", "SKIPPED useEn=$useEnglishCaptions raw='${spoken.take(70)}'")
+                    }
+                }
                 Log.d("CaptionService", "onSpeechResult final=${result.isFinal} matched=${match != null} text='$transcript'")
                 val candidateId = lineIdCounter.incrementAndGet()
                 app.container.runtimeStore.update {
@@ -347,6 +380,7 @@ class CaptionForegroundService : Service() {
             }
 
             val errorSink: (String?) -> Unit = { msg ->
+                if (msg != null) debugLog.log("Error", msg)
                 app.container.runtimeStore.update { it.copy(lastError = msg) }
             }
 
@@ -365,7 +399,8 @@ class CaptionForegroundService : Service() {
                         whisperClient = app.container.localWhisperClient,
                         scope = serviceScope,
                         onResult = onSpeechResult,
-                        onError = errorSink
+                        onError = errorSink,
+                        onLog = { msg -> debugLog.log("Whisper", msg) }
                     )
                     speechEngine = engine
                     observeEngineStatus(engine.status)
@@ -633,6 +668,7 @@ class CaptionForegroundService : Service() {
     }
 
     private fun stopFlow() {
+        runCatching { app.container.debugLog.log("Session", "STOP") }
         captionSessionActive.set(false)
         try { speechEngine?.stop() } catch (_: Throwable) {}
         speechEngine = null

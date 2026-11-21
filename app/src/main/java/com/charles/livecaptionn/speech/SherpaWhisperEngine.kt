@@ -28,7 +28,8 @@ class SherpaWhisperEngine(
     private val whisperClient: LocalWhisperSttClient,
     private val scope: CoroutineScope,
     private val onResult: (SpeechResult) -> Unit,
-    private val onError: (String?) -> Unit = {}
+    private val onError: (String?) -> Unit = {},
+    private val onLog: (String) -> Unit = {}
 ) : SpeechEngine {
 
     private val statusMutable = MutableStateFlow(RecognitionStatus.IDLE)
@@ -74,12 +75,15 @@ class SherpaWhisperEngine(
 
     private suspend fun startInternal() {
         statusMutable.value = RecognitionStatus.PROCESSING
+        val loadStart = System.currentTimeMillis()
         if (!whisperClient.ensureLoaded()) {
+            onLog("ensureLoaded() FAILED")
             onError("Failed to load local Whisper speech model.")
             statusMutable.value = RecognitionStatus.ERROR
             running = false
             return
         }
+        onLog("Loaded ${whisperClient.activeModelName()} in ${System.currentTimeMillis() - loadStart}ms")
         val vad = whisperClient.currentVad()
         if (vad == null) {
             onError("VAD initialization failed.")
@@ -221,7 +225,11 @@ class SherpaWhisperEngine(
                 lastInterimText = ""
                 if (segment.samples.size >= MIN_SEGMENT_SAMPLES) {
                     statusMutable.value = RecognitionStatus.PROCESSING
+                    val t0 = System.currentTimeMillis()
                     val text = whisperClient.transcribe(segment.samples)
+                    val durSec = segment.samples.size / 16000.0
+                    val costMs = System.currentTimeMillis() - t0
+                    onLog("VAD seg=${"%.2f".format(durSec)}s decode=${costMs}ms text='${text.take(80)}'")
                     if (text.isNotBlank()) {
                         onResult(SpeechResult(text, isFinal = true))
                     }

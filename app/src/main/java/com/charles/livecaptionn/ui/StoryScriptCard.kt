@@ -78,12 +78,15 @@ fun StoryScriptCard(
             scope.launch {
                 txtStatus = "正在导入并解析…"
                 val res = withContext(Dispatchers.IO) { runCatching { store.importFile(uri) } }
+                val debugLog = (context.applicationContext as? com.charles.livecaptionn.LiveCaptionApp)?.container?.debugLog
                 res.fold(
                     onSuccess = { doc ->
                         importedDoc = doc
+                        debugLog?.log("Import", "Imported OK: chapters=${doc.chapters.size} lines=${doc.lines.size} en=${doc.hasEnglish} zh=${doc.hasChinese}")
                         txtStatus = formatImportedStatus(doc) + "（重启服务生效）"
                     },
                     onFailure = { err ->
+                        debugLog?.log("Import", "Import FAILED: ${err.message}")
                         txtStatus = "导入失败：${err.message ?: "请检查 UTF-8 文本"}"
                     }
                 )

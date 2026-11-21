@@ -2,6 +2,7 @@ package com.charles.livecaptionn.di
 
 import android.content.Context
 import com.charles.livecaptionn.billing.PremiumRepository
+import com.charles.livecaptionn.data.CaptionDebugLog
 import com.charles.livecaptionn.data.PremiumLocalStore
 import com.charles.livecaptionn.data.SettingsDataStore
 import com.charles.livecaptionn.data.SettingsRepository
@@ -36,6 +37,7 @@ class AppContainer(context: Context) {
     val appScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     val settingsRepository: SettingsRepository = SettingsDataStore(context.applicationContext)
+    val debugLog: CaptionDebugLog = CaptionDebugLog(context.applicationContext)
     val runtimeStore: CaptionRuntimeStore = CaptionRuntimeStore()
     private val libreTranslationRepository: TranslationRepository = LibreTranslateRepository(settingsRepository)
     private val mlKitTranslationRepository: TranslationRepository = MlKitTranslationRepository()

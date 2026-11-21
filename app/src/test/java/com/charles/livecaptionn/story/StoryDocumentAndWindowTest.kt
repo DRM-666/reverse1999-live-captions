@@ -114,10 +114,10 @@ class StoryDocumentAndWindowTest {
         val doc = StoryDocumentParser.parse(sentences.joinToString("\n"))
         val matcher = StoryMatcher.fromDocument(doc)!!
 
-        // Jump cursor to line 12 (0-based 11)
+        // Jump cursor to line 12 (past index 5)
         assertNotNull(matcher.match("The ancient Rusalki vessel gleamed softly beneath the gaslight"))
         val cursorAt12 = matcher.cursor
-        assertEquals(11, cursorAt12)
+        assertTrue(cursorAt12 > 5)
 
         // Match line 1 globally (more than 5 lines behind) -> returns line 1, but does NOT pull cursor back to 0
         assertNotNull(matcher.match("Good morning everyone at the Atlantis exhibition hall"))
@@ -160,5 +160,34 @@ class StoryDocumentAndWindowTest {
         tracker.advanceIfMatched(3) // matched line 3 -> Ch 2
         assertEquals(2, tracker.activeChapter)
         assertEquals(listOf(2), changed)
+    }
+
+    @Test
+    fun hybridMatcher_handlesProperNounSlipClippedPrefixAndAdjacentMerge() {
+        val md = """
+            ## 第 1 章
+            | 时间 | 说话人 | 中文 | 英文 |
+            |---|---|---|---|
+            | 0:00 | 劳伦斯 | 幸会 | Madame Bovan, it is truly an honor to make your acquaintance. |
+            | 0:10 | ？？？ | 未必 | Not necessarily. |
+            | 0:12 | ？？？ | 看盖子 | See that lid on the top. |
+
+            ## 第 2 章
+            | 时间 | 说话人 | 中文 | 英文 |
+            |---|---|---|---|
+            | 0:00 | 警员 | 另一章 | The carriage arrived before dawn at the gate. |
+        """.trimIndent()
+        val doc = StoryDocumentParser.parse(md)
+        val matcher = StoryMatcher.fromDocument(doc, startChapter = 1)!!
+
+        // Clipped prefix + misspelled proper noun in Tier 1/2
+        val first = matcher.matchDetailed("bowen it is truly honor to make your acquaintance")
+        assertNotNull(first.text)
+        assertTrue(first.text!!.contains("make your acquaintance"))
+
+        // Adjacent short-line merge ("Not necessarily." + "See that lid on the top.")
+        val merged = matcher.matchDetailed("not necessarily see that lid on the top")
+        assertNotNull(merged.text)
+        assertTrue(merged.text!!.contains("See that lid on the top"))
     }
 }

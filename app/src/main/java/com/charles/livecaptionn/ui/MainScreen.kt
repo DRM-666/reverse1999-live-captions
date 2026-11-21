@@ -1,7 +1,12 @@
 package com.charles.livecaptionn.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -79,6 +84,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -92,6 +98,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.charles.livecaptionn.ads.AdUnits
 import com.charles.livecaptionn.billing.PremiumProduct
 import com.charles.livecaptionn.ads.NativeAdCard
@@ -189,6 +198,12 @@ fun MainScreen(
                         Icon(Icons.Filled.Translate, contentDescription = null, modifier = Modifier.size(28.dp))
                         Spacer(Modifier.width(10.dp))
                         Text(t["Live CaptionN"], fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "v${com.charles.livecaptionn.BuildConfig.VERSION_NAME}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f)
+                        )
                     }
                 },
                 actions = {
@@ -284,6 +299,7 @@ fun MainScreen(
             )
             AudioSourceCard(ui, viewModel, onManageModels = { showVoskSheet = true })
             StoryScriptCard(ui = ui, viewModel = viewModel)
+            DebugLogCard(debugLog = feedbackApp.container.debugLog, isRunning = ui.runtime.running, originalText = ui.runtime.originalText)
             LanguageCard(
                 ui = ui,
                 viewModel = viewModel,
@@ -2036,5 +2052,100 @@ private fun DeviceCompatibilityCard(
         }
     }
 }
+
+@Composable
+private fun DebugLogCard(
+    debugLog: com.charles.livecaptionn.data.CaptionDebugLog,
+    isRunning: Boolean,
+    originalText: String
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var count by remember(isRunning, originalText) { mutableStateOf(debugLog.lineCount()) }
+    var feedback by remember { mutableStateOf<String?>(null) }
+
+    val saveLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("text/plain")
+    ) { uri ->
+        if (uri != null) {
+            scope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                val ok = runCatching {
+                    val content = debugLog.exportFullText()
+                    context.contentResolver.openOutputStream(uri)?.use { out ->
+                        out.write(content.toByteArray(Charsets.UTF_8))
+                    } ?: error("无法写入文件")
+                }
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    feedback = ok.fold({ "日志已保存，共 $count 条" }, { "保存失败：${it.message}" })
+                }
+            }
+        }
+    }
+
+    Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                SectionLabel("调试日志与命中诊断")
+                Text("已记录 $count 条", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Text(
+                "记录 Whisper 原始听写、台词匹配层级/分数及最近候选，便于排查未命中原因。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    onClick = {
+                        count = debugLog.lineCount()
+                        saveLauncher.launch("livecaption-debug-v${com.charles.livecaptionn.BuildConfig.VERSION_NAME}.txt")
+                    },
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("导出 .txt")
+                }
+                OutlinedButton(
+                    onClick = {
+                        val content = debugLog.exportFullText()
+                        val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        cm.setPrimaryClip(ClipData.newPlainText("LiveCaption Debug Log", content.takeLast(120_000)))
+                        count = debugLog.lineCount()
+                        feedback = "已复制最近日志到剪贴板"
+                    },
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("复制")
+                }
+                OutlinedButton(
+                    onClick = {
+                        val content = debugLog.exportFullText()
+                        val share = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, content.takeLast(80_000))
+                        }
+                        context.startActivity(Intent.createChooser(share, "分享调试日志"))
+                    },
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("分享")
+                }
+                TextButton(onClick = {
+                    debugLog.clear()
+                    count = 0
+                    feedback = "日志已清空"
+                }) {
+                    Text("清空")
+                }
+            }
+            feedback?.let {
+                Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+            }
+        }
+    }
+}
+
 
 

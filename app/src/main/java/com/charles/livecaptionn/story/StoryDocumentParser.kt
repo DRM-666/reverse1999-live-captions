@@ -174,12 +174,12 @@ object StoryDocumentParser {
     }
 
     /**
-     * Expands multi-sentence English lines (> 90 chars) into additional single-sentence
+     * Expands multi-sentence English lines (> 45 chars) into additional single-sentence
      * candidates right next to the full line so mid-turn VAD pauses still match cleanly.
      */
     internal fun splitSentencesIfLong(english: String): List<String> {
         val clean = english.trim()
-        if (clean.length <= 90) return emptyList()
+        if (clean.length <= 45) return emptyList()
         val parts = clean.split(SENTENCE_SPLIT_REGEX).map { it.trim() }.filter { it.isNotEmpty() }
         if (parts.size < 2) return emptyList()
         return parts
