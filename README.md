@@ -1,25 +1,28 @@
 # 《重返未来：1999》英文字幕辅助工具 (Reverse: 1999 Live English Captions)
 
-一款面向《重返未来：1999》国服玩家的 Android 实时英文字幕悬浮工具，基于开源项目 [LiveCaptionN](https://github.com/chartmann1590/LiveTranscribe-Android)（MIT License）二次开发定制。
+一款面向《重返未来：1999》国服玩家的 Android 实时英文字幕悬浮工具，基于开源项目 [LiveTranscribe-Android (LiveCaptionN)](https://github.com/chartmann1590/LiveTranscribe-Android)（MIT License）二次开发定制。
 
-> **免责声明 / 版权声明**：本项目仅用于个人英语听力学习与开源技术交流，完全免费、无广告、不盈利。游戏中所有角色名、世界观、台词文本与配音著作权均归原版权方（深蓝互动 / Bluepoch）所有；如版权方认为仓库内任何学习笔记文本存在不妥，请通过 GitHub Issue 或 DMCA 联系，确认后将立即删除相关文本文件。
+> **配套剧情英文文本仓库**：如果你**只需要纯文本 / 中英对照台词脚本**，请前往独立文本仓库 👉 **[reverse1999-story-transcripts](https://github.com/DRM-666/reverse1999-story-transcripts)**（已整理好《4.1 亚特兰蒂斯谋杀案》全 20 章双语 MD 与纯英文 TXT，可直接下载导入本 App）。
+
+> **免责声明 / 版权声明**：本项目仅用于个人英语听力学习与开源技术交流，完全免费、无广告、不盈利。游戏中所有角色名、世界观、台词文本与配音著作权均归原版权方（深蓝互动 / Bluepoch）所有；如有任何版权疑虑请提交 Issue 告知。
 
 ---
 
 ## 核心特性（相比原版的主要改进）
 
-1. **多口音免费离线识别引擎（Sherpa-ONNX Whisper Small + Silero VAD）**
-   - 内置 `whisper-small.en (int8)` 与 `silero_vad.int8.onnx`，纯本地离线识别游戏系统音频（MediaProjection），针对《重返未来：1999》多国口音和背景音乐场景大幅提升准确率。
-   - 保留 `Vosk` 流式引擎并解除大模型本地使用限制。
+1. **多口音免费离线识别引擎（Sherpa-ONNX Whisper + Silero VAD）**
+   - 纯本地离线识别游戏系统音频（MediaProjection），针对《重返未来：1999》多国口音和背景音乐场景大幅提升准确率。
+   - **轻装/完整双版本打包**：轻装更新版（~135 MiB）支持在 App 内通过镜像一键下载 `Whisper Small` / `Base` / `Tiny` 或导入本地 `.zip` 模型包，模型存于私有目录，升级 APK 不重复下载；完整版内置 `whisper-small.en` 开箱即用。
 2. **服务总开关 & 资源彻底释放**
    - 主页提供一键「字幕服务总开关」；关闭开关后停止音频采集、退出前台服务并主动释放 ONNX / VAD / Vosk 原生模型内存，不玩游戏时不占系统资源。
 3. **电影/游戏字幕条悬浮窗**
    - 支持横屏极简字幕条模式：隐藏常驻顶栏按钮、字体 `10–32sp`（默认 `14sp`）、背景透明度 `0%–100%`（支持纯文字 + 黑色描边投影）、仅保留最近 `1–6` 行（默认 `2` 行），并支持 **锁定防误触（触摸穿透）**。
 4. **章节感知三层顺序窗口匹配 + 自动跨章推进**
-   - 支持直接导入双语对照 Markdown（如 `story-notes/story_bilingual_reference.md`）或纯英文 TXT（`story-notes/story_en_for_app.txt`）。
-   - 自动按 `## 第 X 章` 分章并补充长句拆句索引；通过「顺序窗口 → 章内重定位 → 防倒跳全局回退」消歧，**跨入下一章时自动切换并保存进度**。
-5. **UTTU 在线选章 & 可选大模型上下文纠偏**
-   - 内置 UTTU 剧情目录浏览器，支持分类浏览/拉取剧情；若无英文原稿，可选配阿里云百炼（`qwen3.8-omni-flash` / `qwen-turbo`）或任意 OpenAI 兼容接口做极省 token 的滑窗上下文纠偏。
+   - 支持直接导入双语对照 Markdown（`story_bilingual_reference.md`）或纯英文 TXT（`story_en_for_app.txt`）。
+   - 自动按 `## 第 X 章` 分章并自动切分长难句与无标点超长句；通过「顺序窗口（含近邻行音近字形兜底）→ 章内重定位 → 防倒跳全局回退」消歧，**跨入下一章时自动切换并保存进度**。
+5. **UTTU 在线选章 & 可选大模型上下文纠偏 & 一键调试日志导出**
+   - 内置 UTTU 剧情目录浏览器，支持分类浏览/拉取剧情；若无英文原稿，可选配阿里云百炼或任意 OpenAI 兼容接口做上下文纠偏。
+   - 主页内置诊断日志导出（`.txt` / 复制 / 分享），方便排查识别与匹配命中情况。
 
 ---
 
@@ -30,8 +33,8 @@
 - **完整开箱版 `story-english-captions.apk`（`~533 MiB`）**：内置完整 `whisper-small.en` 与 Vosk 小模型，装完免配置即刻开用。
 
 **使用步骤：**
-1. 下载安装对应版本的 APK（`arm64-v8a`，Android 9+）。
-2. （可选，强烈推荐）将仓库中 `story-notes/story_bilingual_reference.md` 传到手机，在 App 内「剧情台词库」卡片点击 **导入 MD/TXT** 并选择该文件（此时无需配置任何大模型 API Key，0 token 纯离线匹配）；也可直接使用 **UTTU 在线选章**。
+1. 从本仓库 **[Releases](https://github.com/DRM-666/reverse1999-live-captions/releases)** 下载并安装对应版本的 APK（`arm64-v8a`，Android 9+）。
+2. （可选，强烈推荐）前往文本仓库 **[reverse1999-story-transcripts](https://github.com/DRM-666/reverse1999-story-transcripts)** 下载 `story_bilingual_reference.md` 到手机，在 App 内「剧情台词库」卡片点击 **导入 MD/TXT** 并选择该文件（此时无需配置任何大模型 API Key，0 token 纯离线匹配）；也可直接使用 **UTTU 在线选章**。
 3. 授予悬浮窗与屏幕/音频捕获权限，打开顶部 **「字幕服务总开关」**（默认 `System Audio` + `Whisper`），进入游戏剧情即可使用。
 
 ---
