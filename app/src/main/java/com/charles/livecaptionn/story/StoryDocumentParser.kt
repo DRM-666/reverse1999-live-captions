@@ -28,6 +28,7 @@ object StoryDocumentParser {
     private val SEPARATOR_ROW_REGEX = Regex("""^\|[\s:\-|]+\|$""")
     private val CJK_REGEX = Regex("""[\u4e00-\u9fff]""")
     private val SENTENCE_SPLIT_REGEX = Regex("""(?<=[.!?])\s+""")
+    private val CLAUSE_SPLIT_REGEX = Regex("""(?<=[,;:.!?])\s+""")
 
     fun parse(raw: String): ParsedStoryDocument {
         val text = raw.removePrefix("\uFEFF")
@@ -174,14 +175,42 @@ object StoryDocumentParser {
     }
 
     /**
-     * Expands multi-sentence English lines (> 45 chars) into additional single-sentence
-     * candidates right next to the full line so mid-turn VAD pauses still match cleanly.
+     * Expands multi-sentence and multi-clause English lines into additional candidates
+     * right next to the full line so mid-sentence VAD pauses (including comma pauses like
+     * `"It was the year 1861,"`) match cleanly without waiting for the entire paragraph.
      */
     internal fun splitSentencesIfLong(english: String): List<String> {
         val clean = english.trim()
         if (clean.length <= 45) return emptyList()
-        val parts = clean.split(SENTENCE_SPLIT_REGEX).map { it.trim() }.filter { it.isNotEmpty() }
-        if (parts.size < 2) return emptyList()
-        return parts
+        val out = LinkedHashSet<String>()
+        val sentences = clean.split(SENTENCE_SPLIT_REGEX).map { it.trim() }.filter { it.isNotEmpty() }
+        if (sentences.size >= 2) {
+            out.addAll(sentences)
+        }
+        // Also split long sentences on comma/semicolon pauses, merging tiny <4-word fragments
+        // onto their neighbor so each indexed clause stays distinctive.
+        for (sent in sentences) {
+            if (sent.length <= 50) continue
+            val rawClauses = sent.split(CLAUSE_SPLIT_REGEX).map { it.trim() }.filter { it.isNotEmpty() }
+            if (rawClauses.size < 2) continue
+            val merged = mutableListOf<String>()
+            var acc = ""
+            for (c in rawClauses) {
+                acc = if (acc.isEmpty()) c else "$acc $c"
+                if (acc.split(' ').count { it.any(Char::isLetterOrDigit) } >= 4) {
+                    merged.add(acc)
+                    acc = ""
+                }
+            }
+            if (acc.isNotEmpty()) {
+                if (merged.isNotEmpty()) merged[merged.lastIndex] = "${merged.last()} $acc"
+                else merged.add(acc)
+            }
+            if (merged.size >= 2) {
+                out.addAll(merged)
+            }
+        }
+        out.remove(clean)
+        return out.toList()
     }
 }

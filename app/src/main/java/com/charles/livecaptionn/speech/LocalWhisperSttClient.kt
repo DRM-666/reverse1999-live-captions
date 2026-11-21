@@ -43,11 +43,11 @@ class LocalWhisperSttClient(private val context: Context) {
                 val vadConfig = VadModelConfig(
                     sileroVadModelConfig = SileroVadModelConfig(
                         model = VAD_ASSET_PATH,
-                        threshold = 0.38f,
-                        minSilenceDuration = 0.45f,
-                        minSpeechDuration = 0.22f,
+                        threshold = 0.46f,
+                        minSilenceDuration = 0.35f,
+                        minSpeechDuration = 0.20f,
                         windowSize = 512,
-                        maxSpeechDuration = 10.0f
+                        maxSpeechDuration = 6.0f
                     ),
                     sampleRate = AudioCaptureHelper.SAMPLE_RATE,
                     numThreads = 1,
@@ -138,7 +138,8 @@ class LocalWhisperSttClient(private val context: Context) {
         private val INLINE_TAGS = Regex("\\[(?:MUSIC|Music|BLANK_AUDIO|APPLAUSE|LAUGHTER|SILENCE|NOISE|INAUDIBLE|SOUND|BGM)]|\\((?:music|sighs|laughter|applause|silence)\\)", RegexOption.IGNORE_CASE)
         private val COMMON_NOISE_PHRASES = setOf(
             "thank you.", "thank you", "thanks for watching.", "thanks for watching!",
-            "you", "bye.", "bye", ".", "...", "hmm", "uh", "ah"
+            "you", "you.", "bye.", "bye", ".", "...", "hmm", "hmm.", "uh", "ah",
+            "fuck", "fuck.", "shit", "shit."
         )
 
         internal fun cleanWhisperText(raw: String): String {

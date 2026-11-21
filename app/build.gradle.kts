@@ -40,7 +40,7 @@ val hasReleaseSigning: Boolean = keystoreProps.getProperty("storeFile")?.isNotBl
 // number matches the release tag (v1.0.<run_number>). Local dev builds get 1.
 // Explicit env overrides (ANDROID_VERSION_CODE / ANDROID_VERSION_NAME) allow
 // the manual Play Publish workflow to set a high monotonic version code.
-val ciRunNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 5
+val ciRunNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 6
 val appVersionCode: Int = System.getenv("ANDROID_VERSION_CODE")?.toIntOrNull() ?: ciRunNumber
 val appVersionName: String = System.getenv("ANDROID_VERSION_NAME")
     ?: "1.0.$appVersionCode"

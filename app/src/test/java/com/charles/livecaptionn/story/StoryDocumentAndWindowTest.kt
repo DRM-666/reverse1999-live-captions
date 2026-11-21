@@ -190,4 +190,20 @@ class StoryDocumentAndWindowTest {
         assertNotNull(merged.text)
         assertTrue(merged.text!!.contains("See that lid on the top"))
     }
+
+    @Test
+    fun chapter17RealLogCase_commaPauseMatches1861Clause() {
+        val md = """
+            ## 第 17 章
+            | 时间 | 说话人 | 中文 | 英文 |
+            |---|---|---|---|
+            | 0:00 | 伊芙琳 | 1861年…… | It was the year 1861, on the outskirts of a town on the banks of the main, a local lord's wife was fatally wounded by a wild beast. It was a grave loss for the aristocratic family and an even greater one for her eight year old daughter. |
+            | 0:18 | 伊芙琳 | 很快…… | Soon after the tragedy, the lord remarried and quickly departed on military service, leaving his daughter in the solitary care of a stepmother. |
+        """.trimIndent()
+        val doc = StoryDocumentParser.parse(md)
+        val matcher = StoryMatcher.fromDocument(doc, startChapter = 17)!!
+        val hit = matcher.matchDetailed("It was the year 1860.")
+        assertEquals("It was the year 1861,", hit.text)
+        assertTrue(hit.score >= 0.90)
+    }
 }

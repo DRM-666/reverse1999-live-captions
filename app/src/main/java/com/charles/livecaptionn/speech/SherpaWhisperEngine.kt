@@ -8,6 +8,8 @@ import com.charles.livecaptionn.settings.AudioSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,9 +19,9 @@ import kotlinx.coroutines.launch
 /**
  * Multi-accent on-device speech engine powered by Silero VAD + Sherpa-ONNX Whisper.
  *
- * Streams 16 kHz PCM into Silero VAD. While an utterance is in progress, emits periodic
- * interim Whisper snapshots (~1.8 s) so long lines appear without waiting for the speaker
- * to finish; once Silero detects a sentence pause, decodes the clean segment as final.
+ * Uses a strict producer-consumer pipeline: [captureLoop] continuously drains [AudioRecord]
+ * into Silero VAD with zero blocking so system audio buffers never overflow, while
+ * [decodeLoop] runs Whisper inference asynchronously on completed VAD segments.
  */
 class SherpaWhisperEngine(
     private val context: Context,
@@ -37,6 +39,8 @@ class SherpaWhisperEngine(
 
     private var audioRecord: AudioRecord? = null
     private var captureJob: Job? = null
+    private var decodeJob: Job? = null
+    private var segmentChannel: Channel<FloatArray>? = null
 
     @Volatile private var running = false
     @Volatile private var paused = false
@@ -53,6 +57,10 @@ class SherpaWhisperEngine(
         paused = false
         captureJob?.cancel()
         captureJob = null
+        decodeJob?.cancel()
+        decodeJob = null
+        segmentChannel?.close()
+        segmentChannel = null
         try { audioRecord?.stop() } catch (_: Throwable) {}
         try { audioRecord?.release() } catch (_: Throwable) {}
         audioRecord = null
@@ -98,7 +106,7 @@ class SherpaWhisperEngine(
                 context = context,
                 audioSource = audioSource,
                 mediaProjection = mediaProjection,
-                minBufferBytes = READ_BYTES * 8,
+                minBufferBytes = READ_BYTES * 16,
                 onError = onError
             )
         } catch (t: Throwable) {
@@ -142,20 +150,21 @@ class SherpaWhisperEngine(
             return
         }
 
+        val ch = Channel<FloatArray>(capacity = 8, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        segmentChannel = ch
         statusMutable.value = RecognitionStatus.LISTENING
         onError(null)
-        captureJob = scope.launch(Dispatchers.Default) { captureLoop(record) }
+        decodeJob = scope.launch(Dispatchers.Default) { decodeLoop(ch) }
+        captureJob = scope.launch(Dispatchers.IO) { captureLoop(record, ch) }
     }
 
-    private suspend fun captureLoop(record: AudioRecord) {
+    private suspend fun captureLoop(record: AudioRecord, ch: Channel<FloatArray>) {
         val pcmBuffer = ByteArray(READ_BYTES)
         val vadWindow = FloatArray(VAD_WINDOW_SAMPLES)
         var vadFill = 0
-        val liveSpeechBuffer = ArrayList<Float>(MAX_INTERIM_SAMPLES)
-        var lastInterimDecodeMs = 0L
-        var lastInterimText = ""
         var silentChunkStreak = 0
         var sawAnyAudioEver = false
+        var loggedAudioActive = false
 
         while (scope.isActive && running) {
             if (paused) {
@@ -167,13 +176,17 @@ class SherpaWhisperEngine(
                 record.read(pcmBuffer, 0, pcmBuffer.size)
             } catch (t: Throwable) {
                 Log.w(TAG, "AudioRecord.read threw", t)
+                onLog("AudioRecord.read threw: ${t.message}")
                 onError("Audio capture read failed")
                 statusMutable.value = RecognitionStatus.ERROR
                 delay(400)
                 continue
             }
             if (read <= 0) {
-                if (read < 0) delay(80)
+                if (read < 0) {
+                    onLog("AudioRecord.read returned $read")
+                    delay(80)
+                }
                 continue
             }
 
@@ -189,6 +202,10 @@ class SherpaWhisperEngine(
             } else {
                 silentChunkStreak = 0
                 sawAnyAudioEver = true
+                if (!loggedAudioActive) {
+                    loggedAudioActive = true
+                    onLog("System/Mic audio flowing (avgAbs=$avgAbs)")
+                }
                 onError(null)
             }
 
@@ -204,58 +221,33 @@ class SherpaWhisperEngine(
 
                 if (vadFill == VAD_WINDOW_SAMPLES) {
                     vad.acceptWaveform(vadWindow)
-                    if (vad.isSpeechDetected()) {
-                        for (sample in vadWindow) {
-                            if (liveSpeechBuffer.size < MAX_INTERIM_SAMPLES) {
-                                liveSpeechBuffer.add(sample)
-                            }
-                        }
-                    }
                     vadFill = 0
                 }
             }
 
-            // Emit final segments whenever Silero VAD closes a spoken sentence.
-            var emittedFinal = false
             while (!vad.empty()) {
                 val segment = vad.front()
                 vad.pop()
-                emittedFinal = true
-                liveSpeechBuffer.clear()
-                lastInterimText = ""
                 if (segment.samples.size >= MIN_SEGMENT_SAMPLES) {
-                    statusMutable.value = RecognitionStatus.PROCESSING
-                    val t0 = System.currentTimeMillis()
-                    val text = whisperClient.transcribe(segment.samples)
-                    val durSec = segment.samples.size / 16000.0
-                    val costMs = System.currentTimeMillis() - t0
-                    onLog("VAD seg=${"%.2f".format(durSec)}s decode=${costMs}ms text='${text.take(80)}'")
-                    if (text.isNotBlank()) {
-                        onResult(SpeechResult(text, isFinal = true))
-                    }
+                    ch.trySend(segment.samples)
                 }
             }
-            if (emittedFinal) {
-                lastInterimDecodeMs = System.currentTimeMillis()
-                if (!paused && running) statusMutable.value = RecognitionStatus.LISTENING
-                continue
-            }
+        }
+    }
 
-            // Periodic live preview for long unbroken speech (> 1.8 s).
-            val now = System.currentTimeMillis()
-            if (vad.isSpeechDetected() &&
-                liveSpeechBuffer.size >= MIN_INTERIM_SAMPLES &&
-                now - lastInterimDecodeMs >= INTERIM_INTERVAL_MS
-            ) {
-                lastInterimDecodeMs = now
-                val snapshot = liveSpeechBuffer.toFloatArray()
-                val text = whisperClient.transcribe(snapshot)
-                if (text.isNotBlank() && text != lastInterimText) {
-                    lastInterimText = text
-                    onResult(SpeechResult(text, isFinal = false))
-                }
+    private suspend fun decodeLoop(ch: Channel<FloatArray>) {
+        for (samples in ch) {
+            if (!running) break
+            if (paused) continue
+            statusMutable.value = RecognitionStatus.PROCESSING
+            val t0 = System.currentTimeMillis()
+            val text = whisperClient.transcribe(samples)
+            val durSec = samples.size / 16000.0
+            val costMs = System.currentTimeMillis() - t0
+            onLog("VAD seg=${"%.2f".format(durSec)}s decode=${costMs}ms text='${text.take(80)}'")
+            if (text.isNotBlank()) {
+                onResult(SpeechResult(text, isFinal = true))
             }
-
             if (!paused && running) {
                 statusMutable.value = RecognitionStatus.LISTENING
             }
@@ -267,9 +259,6 @@ class SherpaWhisperEngine(
         private const val VAD_WINDOW_SAMPLES = 512 // 32ms @ 16kHz
         private const val READ_BYTES = 2048 // 64ms @ 16kHz mono 16-bit
         private const val MIN_SEGMENT_SAMPLES = 3_200 // 0.2s
-        private const val MIN_INTERIM_SAMPLES = 28_800 // 1.8s
-        private const val MAX_INTERIM_SAMPLES = 160_000 // 10s
-        private const val INTERIM_INTERVAL_MS = 1_800L
         private const val SILENT_CHUNKS_BEFORE_HINT = 48 // ~3s
     }
 }

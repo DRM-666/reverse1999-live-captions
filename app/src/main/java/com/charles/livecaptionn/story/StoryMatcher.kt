@@ -422,8 +422,8 @@ class StoryMatcher private constructor(
     companion object {
         const val MAX_LINES = 10_000
         private const val MAX_QUERY_CHARS = 500
-        private const val WINDOW_SIZE = 20
-        private const val NEXT_CHAPTER_PEEK = 10
+        private const val WINDOW_SIZE = 32
+        private const val NEXT_CHAPTER_PEEK = 16
         private const val WINDOW_THRESHOLD = 0.66
         private const val CHAPTER_THRESHOLD = 0.72
         private const val CHAPTER_GAP = 0.03
